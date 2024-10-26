@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { Button } from "@mui/material";
 import googleIMG from "./../../assets/google.png";
+import GoogleSignInBtn from "../../components/Global/GoogleSignInBtn.jsx";
 
 export default function Login() {
   const theme = useTheme();
@@ -150,7 +151,7 @@ export default function Login() {
         </button>
 
         {/* divider */}
-        <div className="my-6 flex items-center justify-center">
+        <div className="my-6 mx-6 flex items-center justify-center">
           <div
             className="w-full h-[.1rem] opacity-30 "
             style={{ backgroundColor: borderColor.secondary }}
@@ -172,24 +173,7 @@ export default function Login() {
         </div>
 
         {/* google login section */}
-        <Button
-          variant="outlined"
-          sx={{
-            width: "100%",
-            height: 47,
-            color: "#1974CE",
-            fontSize: 16,
-            textTransform: "unset",
-            fontWeight: "bold",
-            borderRadius: 2,
-            borderColor: "#1974CE",
-            boxShadow: "none",
-            padding: 1,
-          }}
-        >
-          <img className="h-8 mr-2" src={googleIMG} alt="google_icon" />
-          <span>Sign In With Google</span>
-        </Button>
+        <GoogleSignInBtn />
       </section>
     </div>
   );

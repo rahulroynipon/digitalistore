@@ -17,6 +17,7 @@
     "@mui/material": "^6.1.5",
     "@reduxjs/toolkit": "^2.3.0",
     "axios": "^1.7.7",
+    "firebase": "^11.0.1",
     "formik": "^2.4.6",
     "framer-motion": "^11.11.10",
     "nanoid": "^5.0.7",
