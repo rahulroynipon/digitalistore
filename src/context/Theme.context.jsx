@@ -5,6 +5,7 @@ import {
   CssBaseline,
 } from "@mui/material";
 import { indigo, amber } from "@mui/material/colors";
+import { button } from "framer-motion/client";
 
 const ThemeContext = createContext();
 
@@ -31,11 +32,26 @@ export const ThemeProvider = ({ children }) => {
         main: mode === "light" ? amber[500] : amber[700],
       },
       background: {
-        default: mode === "light" ? "#FFFFFF" : "#001F3F",
+        default: mode === "light" ? "#FFFFFF99" : "#071739",
         paper: mode === "light" ? "#F5F5F5" : "#003366",
+      },
+      button: {
+        btnH: mode === "light" ? "#F0F5FF" : "#112755",
       },
       text: {
         primary: mode === "light" ? "#000000" : "#FFFFFF",
+        secondary: mode === "light" ? "" : "#596780",
+      },
+      icon: {
+        primary: mode === "light" ? "#292929" : "#fff",
+      },
+      border: {
+        primary: mode === "light" ? "#D3D3D3" : "#071739",
+        secondary: mode === "light" ? "#071739" : "#D3D3D3",
+      },
+      color: {
+        header: mode === "light" ? "#FDFDFD" : "#112143",
+        login: mode === "light" ? "#f0f0f0" : "#1b2b4d",
       },
     },
   });
