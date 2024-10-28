@@ -11,7 +11,6 @@ export default function GoogleSignInBtn() {
   const handleGoogleSignIn = async () => {
     try {
       const { user } = await signInWithPopup(auth, provider);
-      console.log(user);
       const token = await user.getIdToken();
       dispatch(googleSignUp(token));
     } catch (error) {

@@ -2,11 +2,12 @@ import { Email, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
 import bg from "./../../assets/logPattern.webp";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { Button } from "@mui/material";
-import googleIMG from "./../../assets/google.png";
 import GoogleSignInBtn from "../../components/Global/GoogleSignInBtn.jsx";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function Login() {
   const theme = useTheme();
@@ -17,10 +18,21 @@ export default function Login() {
   const borderColor = theme.palette.border;
 
   const [showPassword, setShowPassword] = useState(false);
+  const { isAuth } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
+
+  useEffect(() => {
+    const from = location.pathname?.state || "/";
+
+    if (isAuth) {
+      navigate(from);
+    }
+  }, [isAuth, location, navigate]);
 
   return (
     <div className="relative flex items-center justify-center min-h-screen">
@@ -35,7 +47,7 @@ export default function Login() {
 
       {/* Login Form Section */}
       <section
-        className="relative z-10 px-9 py-10 mx-6 w-[22rem] rounded-lg max-w-sm shrink-0"
+        className="relative px-9 py-10 mx-6 w-[22rem] rounded-lg max-w-sm shrink-0"
         style={{
           backgroundColor: loginBgColor,
           color: textColor,
