@@ -4,6 +4,8 @@ import Login from "./pages/Login/Login";
 import { Toaster } from "sonner";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./components/Global/Layout";
+import Dashboard from "./pages/Dashbord";
+import ProductCategory from "./pages/ProductCategory";
 
 function App() {
   return (
@@ -14,7 +16,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route index element={<p>Dashbord</p>} />
+            <Route index element={<Dashboard />} />
             {routeItems?.map((item) => (
               <Route
                 key={item?.id}
@@ -77,7 +79,7 @@ export const routeItems = [
   {
     id: "product-category",
     path: "/category/product",
-    component: <p>Product Category</p>,
+    component: <ProductCategory />,
   },
   {
     id: "brand-category",

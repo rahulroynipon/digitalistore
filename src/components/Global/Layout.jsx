@@ -9,7 +9,7 @@ export default function Layout() {
   const theme = useTheme();
   const navColor = theme.palette.color.navbar;
   const borderColor = theme.palette.border.secondary;
-  const { isOpen, setIsOpen, toggleNav } = useMode();
+  const { isOpen, setIsOpen } = useMode();
 
   const navRef = useRef();
   const toggleBtnRef = useRef();

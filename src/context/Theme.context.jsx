@@ -46,7 +46,7 @@ export const ThemeProvider = ({ children }) => {
         main: mode === "light" ? amber[500] : amber[700],
       },
       background: {
-        default: mode === "light" ? "#EBE9E9" : "#071739",
+        default: mode === "light" ? "#F8F9FA" : "#131920", //#EBE9E9 #071739
         paper: mode === "light" ? "#F5F5F5" : "#003366",
       },
       button: {
@@ -66,9 +66,9 @@ export const ThemeProvider = ({ children }) => {
         secondary: mode === "light" ? "#071739" : "#D3D3D3",
       },
       color: {
-        header: mode === "light" ? "#fdfdfdb7" : "#112143be",
-        navbar: mode === "light" ? "#F8F7F7" : "#0F1F41",
-        login: mode === "light" ? "#f0f0f0" : "#1b2b4d",
+        header: mode === "light" ? "#F8F7F7" : "#131920", // #112143be
+        navbar: mode === "light" ? "#F8F9FA" : "#131920", // #F8F7F7  #0F1F41
+        login: mode === "light" ? "#f0f0f0" : "#1B232D",
       },
     },
     // header: mode === "light" ? "#FDFDFD" : "#112143",

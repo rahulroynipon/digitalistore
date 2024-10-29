@@ -10,7 +10,6 @@ import { MdMessage } from "react-icons/md";
 import { MdCategory } from "react-icons/md";
 import { MdNotificationsActive } from "react-icons/md";
 import { NavLink, useLocation } from "react-router-dom";
-import { store } from "./../../app/store";
 
 export default function Navbar() {
   const [openSubMenu, setOpenSubMenu] = useState(null); // Track open submenu

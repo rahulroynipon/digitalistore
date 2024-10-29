@@ -20,7 +20,6 @@ export default function Header({ Ref }) {
   const { toggleTheme, toggleNav, isOpen } = useMode();
 
   const iconColor = theme.palette.icon.primary;
-  const headerColor = theme.palette.color.header;
 
   const circle = {
     backgroundColor: theme.palette.button.btnH,
@@ -52,7 +51,7 @@ export default function Header({ Ref }) {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 150);
+      setIsScrolled(window.scrollY > 80);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -63,10 +62,12 @@ export default function Header({ Ref }) {
     <header
       className={`${
         isScrolled ? "sticky top-0 shadow-lg" : ""
-      } px-5 md:px-10 py-3 h-[4.5rem] flex justify-between items-center z-30 transition-all duration-500 backdrop-blur-xl`}
-      style={{ backgroundColor: headerColor }}
+      } px-5 md:px-10 py-3 h-[4.5rem] flex justify-between items-center z-30 transition-all duration-500 backdrop-blur`}
     >
-      <div className="text-xl opacity-80">Dashbord</div>
+      <div className="text-xl opacity-80">
+        <span className="hidden lg:block">Dashboard</span>
+        <span className="lg:hidden">Digital Shop</span>
+      </div>
       <div className="flex gap-2 md:gap-4">
         <Button onClick={toggleTheme} sx={circle}>
           <LightModeOutlinedIcon sx={{ color: iconColor, fontSize: 18 }} />
