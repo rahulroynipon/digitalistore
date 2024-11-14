@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 
 export default function Layout() {
   const theme = useTheme();
-  const navColor = theme.palette.color.navbar;
+  const navColor = theme.palette.background.paper;
   const borderColor = theme.palette.border.secondary;
   const { isOpen, setIsOpen } = useMode();
 
@@ -37,12 +37,12 @@ export default function Layout() {
         <aside
           ref={navRef}
           className={`w-72 fixed left-0 top-0 h-full transform transition-all duration-300 ease-in-out shadow-xl lg:shadow-none lg:translate-x-0 p-4 z-40 
-          border-r lg:border-dashed border-none ${
+          border-r-2 lg:border-solid border-none overflow-y-auto ${
             isOpen ? " translate-x-0" : "-translate-x-full"
           }`}
           style={{
             backgroundColor: navColor,
-            borderColor: `${borderColor}30`,
+            borderColor: `${borderColor}20`,
           }}
         >
           <Navbar />

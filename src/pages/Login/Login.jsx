@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 export default function Login() {
   const theme = useTheme();
   const iconColor = theme.palette.icon.primary;
-  const loginBgColor = theme.palette.color.login;
+  const loginBgColor = theme.palette.background.paper;
   const textColor = theme.palette.text.primary;
   const fieldColor = theme.palette.background.default;
   const borderColor = theme.palette.border;
@@ -47,9 +47,9 @@ export default function Login() {
 
       {/* Login Form Section */}
       <section
-        className="relative px-9 py-10 mx-6 w-[22rem] rounded-lg max-w-sm shrink-0"
+        className="relative px-9 py-10 mx-6 w-[22rem] rounded-lg max-w-sm shrink-0 shadow-sm"
         style={{
-          backgroundColor: loginBgColor,
+          backgroundColor: `${loginBgColor}88`,
           color: textColor,
           border: `1px solid ${borderColor.primary}88`,
         }}
@@ -71,18 +71,18 @@ export default function Login() {
                     backgroundColor: fieldColor,
                     border: `1px solid ${borderColor.primary}`,
                   }}
-                  className="flex items-center rounded-md px-3 py-2 group-focus-within:ring-1 focus-within:ring-blue-500"
+                  className="flex items-center overflow-hidden rounded-md group-focus-within:ring-1 focus-within:ring-blue-500"
                 >
                   <Email
                     sx={{ color: iconColor }}
-                    className="mr-2 opacity-65 group-focus-within:opacity-100 group-focus-within:text-blue-600"
+                    className="ml-3 mr-2 absolute opacity-65 group-focus-within:opacity-100 group-focus-within:text-blue-600"
                   />
                   <Field
                     type="email"
                     id="email"
                     name="email"
                     placeholder="Enter your email"
-                    className="w-full border-none focus:ring-0 outline-none bg-transparent"
+                    className="w-full border-none px-3 py-2 pl-11 focus:ring-0 outline-none bg-transparent"
                     style={{ color: textColor }}
                   />
                 </div>
@@ -100,24 +100,24 @@ export default function Login() {
                     backgroundColor: fieldColor,
                     border: `1px solid ${borderColor.primary}`,
                   }}
-                  className="flex items-center rounded-md px-3 py-2 group-focus-within:ring-1 focus-within:ring-blue-500"
+                  className="flex items-center rounded-md overflow-hidden group-focus-within:ring-1 focus-within:ring-blue-500"
                 >
                   <Lock
                     sx={{ color: iconColor }}
-                    className="mr-2 opacity-65 group-focus-within:opacity-100 group-focus-within:text-blue-600"
+                    className="ml-3 mr-2 absolute opacity-65 group-focus-within:opacity-100 group-focus-within:text-blue-600"
                   />
                   <Field
                     type={showPassword ? "text" : "password"}
                     id="password"
                     name="password"
                     placeholder="Enter your password"
-                    className="w-full border-none focus:ring-0 outline-none bg-transparent"
+                    className="w-full border-none py-2 px-11  focus:ring-0 outline-none bg-transparent"
                     style={{ color: textColor }}
                   />
                   <button
                     type="button"
                     onClick={togglePasswordVisibility}
-                    className="focus:outline-none ml-2 opacity-60"
+                    className="focus:outline-none opacity-60 absolute right-12"
                   >
                     {showPassword ? (
                       <VisibilityOff sx={{ color: iconColor }} />
@@ -138,6 +138,7 @@ export default function Login() {
                 type="submit"
                 variant="contained"
                 sx={{
+                  color: "white",
                   width: "100%",
                   background: "#0858F7",
                   textTransform: "unset",

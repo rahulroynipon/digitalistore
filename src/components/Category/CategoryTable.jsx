@@ -1,139 +1,135 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import {
+  Button,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  IconButton,
-  Collapse,
-  Box,
-  Typography,
 } from "@mui/material";
-import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { useTheme } from "@emotion/react";
+import image from "./../../assets/google.png";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { useDispatch, useSelector } from "react-redux";
+import { optimisticallyDeleteCategory } from "../../features/category/categorySlice";
+import { deleteCategory } from "./../../features/category/categorySlice";
 
-const CategoryTable = ({ categories }) => {
+const CategoryTable = () => {
+  const dispatch = useDispatch();
+  const { categories } = useSelector((state) => state.category);
+
+  const removeCategory = (id) => {
+    dispatch(optimisticallyDeleteCategory(id));
+    dispatch(deleteCategory(id));
+  };
+
+  useEffect(() => {
+    console.log(categories);
+  });
+
   const theme = useTheme();
-  const [open, setOpen] = useState(null);
+  const isActiveText = theme.palette.text.isActive;
+  const navColor = theme.palette;
+  const navTextColor = theme.palette.text.secondary;
+  const rowColor = theme.palette.background;
+  const rowBorderColor = theme.palette.border.secondary;
+  const borderColor = theme.palette.text.isActive;
 
-  const toggleRow = (id) => {
-    setOpen((prevOpen) => (prevOpen === id ? null : id));
+  const actionBTN = {
+    backgroundColor: "#B9181A20",
+    color: "#B9181A",
+    width: 35,
+    height: 35,
+    minWidth: 0,
+    padding: 0,
   };
 
   return (
-    <TableContainer
-      sx={{ backgroundColor: theme.palette.color.navbar, borderRadius: 2 }}
-      style={{ border: `1px solid ${theme.palette.divider}` }}
-    >
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell
-              style={{ color: theme.palette.text.primary, fontSize: 18 }}
-            >
-              Category
-            </TableCell>
-            <TableCell
-              style={{ color: theme.palette.text.primary, fontSize: 18 }}
-            >
-              Subcategories
-            </TableCell>
-            <TableCell
-              style={{ color: theme.palette.text.primary, fontSize: 18 }}
-            >
-              Image
-            </TableCell>
-            <TableCell />
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {categories.map((category) => (
-            <React.Fragment key={category.id}>
+    <div className="w-full overflow-x-auto ">
+      <TableContainer
+        sx={{
+          backgroundColor: navColor,
+          overflowX: "auto",
+          border: `1px solid ${theme.palette.divider}`,
+        }}
+      >
+        <Table sx={{ minWidth: "600px", tableLayout: "auto" }}>
+          {/* Adjusted table layout */}
+          <TableHead>
+            <TableRow sx={{ backgroundColor: `${isActiveText}15` }}>
+              <TableCell sx={{ color: isActiveText }}>SL.</TableCell>
+              <TableCell sx={{ color: isActiveText }}>Image</TableCell>
+              <TableCell sx={{ color: isActiveText }}>Category</TableCell>
+              <TableCell sx={{ color: isActiveText }}>Item</TableCell>
+              <TableCell sx={{ color: isActiveText }}>Created at</TableCell>
+              <TableCell sx={{ color: isActiveText }}>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {categories?.length ? (
+              categories.map((category, index) => (
+                <TableRow
+                  key={category?._id}
+                  sx={{
+                    backgroundColor:
+                      index % 2 == 0 ? `${rowColor.paper}99` : rowColor.paper,
+                    borderBottom: `2px solid ${rowBorderColor}10`,
+                    borderTop: `2px solid ${rowBorderColor}10`,
+                    "&:hover": {
+                      cursor: "pointer",
+                      border: `1px solid ${borderColor}`,
+                      transition:
+                        "background-color 0.3s ease, border 0.3s ease",
+                    },
+                  }}
+                >
+                  <TableCell sx={{ color: navTextColor, fontWeight: 500 }}>
+                    {index + 1}
+                  </TableCell>
+                  <TableCell sx={{ padding: 1.5 }}>
+                    <div className="bg-white inline-block rounded-md overflow-hidden shadow-lg border">
+                      <img
+                        className="h-14 w-14 object-cover "
+                        src={category?.image || image}
+                        alt="Category-image"
+                        onError={(e) => {
+                          e.target.src = image;
+                        }}
+                      />
+                    </div>
+                  </TableCell>
+                  <TableCell sx={{ color: navTextColor }}>
+                    {category?.name}
+                  </TableCell>
+                  <TableCell sx={{ color: navTextColor }}>
+                    {category?.count}
+                  </TableCell>
+                  <TableCell sx={{ color: navTextColor }}>
+                    {category?.createdAt?.split("T")[0]}
+                  </TableCell>
+                  <TableCell sx={{ color: navTextColor }}>
+                    <Button
+                      onClick={() => removeCategory(category?._id)}
+                      sx={actionBTN}
+                      size="small"
+                    >
+                      <DeleteOutlineIcon size="small" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
               <TableRow>
-                <TableCell
-                  style={{
-                    color: theme.palette.text.primary,
-                    borderBottom: `1px solid ${theme.palette.divider}`,
-                  }}
-                >
-                  {category.name}
-                </TableCell>
-                <TableCell
-                  style={{
-                    color: theme.palette.text.primary,
-                    borderBottom: `1px solid ${theme.palette.divider}`,
-                  }}
-                >
-                  <IconButton
-                    aria-label="expand row"
-                    size="small"
-                    onClick={() => toggleRow(category.id)}
-                  >
-                    {open === category.id ? (
-                      <KeyboardArrowUp />
-                    ) : (
-                      <KeyboardArrowDown />
-                    )}
-                  </IconButton>
-                </TableCell>
-                <TableCell
-                  style={{ borderBottom: `1px solid ${theme.palette.divider}` }}
-                >
-                  {category.image ? (
-                    <img
-                      src={category.image}
-                      alt="Category"
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                  ) : (
-                    <span style={{ color: theme.palette.text.primary }}>
-                      No Image
-                    </span>
-                  )}
-                </TableCell>
-                <TableCell />
-              </TableRow>
-
-              <TableRow>
-                <TableCell
-                  style={{
-                    paddingBottom: 0,
-                    paddingTop: 0,
-                    borderBottom: `1px solid ${theme.palette.divider}`,
-                  }}
-                  colSpan={4}
-                >
-                  <Collapse
-                    in={open === category.id}
-                    timeout="auto"
-                    unmountOnExit
-                  >
-                    <Box margin={1}>
-                      <Typography variant="subtitle1">Subcategories</Typography>
-                      {category.subcategories.map((sub, index) => (
-                        <Typography
-                          key={index}
-                          style={{
-                            color: theme.palette.text.primary,
-                            marginTop: 10,
-                            marginLeft: 30,
-                          }}
-                        >
-                          {sub}
-                        </Typography>
-                      ))}
-                    </Box>
-                  </Collapse>
+                <TableCell colSpan={5} className="h-28" align="center">
+                  No categories available
                 </TableCell>
               </TableRow>
-            </React.Fragment>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
   );
 };
 

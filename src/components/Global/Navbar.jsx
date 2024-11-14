@@ -12,13 +12,17 @@ import { MdNotificationsActive } from "react-icons/md";
 import { NavLink, useLocation } from "react-router-dom";
 
 export default function Navbar() {
+  const theme = useTheme();
   const [openSubMenu, setOpenSubMenu] = useState(null); // Track open submenu
-
+  const logoColor = theme.palette.text.isActive;
   return (
     <>
-      <div className="mt-2  mx-5 my-7 text-2xl font-bold opacity-70">
+      <h1
+        style={{ color: logoColor }}
+        className="mt-2  mx-5 my-7 text-2xl font-bold"
+      >
         Digital Shop
-      </div>
+      </h1>
       <div className="px-1">
         {navItems.map((item) => (
           <NavItem

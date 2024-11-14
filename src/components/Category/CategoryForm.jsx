@@ -1,151 +1,174 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import ClearIcon from "@mui/icons-material/Clear";
-import { Button, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
-import { Box } from "@mui/material";
+import ClearIcon from "@mui/icons-material/Clear";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { Button } from "@mui/material";
+import { useDispatch } from "react-redux";
+import {
+  addCategory,
+  optimisticallyAddCategory,
+} from "../../features/category/categorySlice";
 
-const CategoryForm = () => {
+export default function CategoryForm({ closeHandler }) {
   const theme = useTheme();
+  const bgColor = theme.palette.background.default;
+  const fieldColor = theme.palette.background.paper;
+  const borderColor = theme.palette.border.secondary;
+  const btnColor = theme.palette.text.isActive;
+
+  const dispatch = useDispatch();
   const [image, setImage] = useState(null);
 
-  const imageHandler = (event) => {
+  const imageHandler = (event, setFieldValue) => {
     const file = event.target.files[0];
     if (file) {
       setImage(URL.createObjectURL(file));
+      setFieldValue("image", file);
     }
   };
 
-  return (
-    <Box
-      className="md:sticky md:top-24"
-      style={{
-        backgroundColor: theme.palette.color.navbar,
-        border: `1px solid ${theme.palette.divider}`,
-        padding: "1.5rem",
-        borderRadius: "10px",
-      }}
-    >
-      <Typography variant="h6" className="text-xl font-semibold">
-        Add New Category
-      </Typography>
+  const clearImage = (setFieldValue) => {
+    setImage(null);
+    setFieldValue("image", "");
+  };
 
+  return (
+    <div
+      style={{ backgroundColor: bgColor }}
+      className="px-5 py-7 max-w-full w-[23rem]"
+    >
+      <h2 className="text-lg font-semibold mb-4 text-center">
+        Add New Category
+      </h2>
       <Formik
-        initialValues={{ category: "", subcategory: "" }}
+        initialValues={{ category: "", image: "" }}
         validationSchema={Yup.object({
           category: Yup.string().required("Category name is required"),
-          subcategory: Yup.string().required("Subcategory name is required"),
+          image: Yup.mixed()
+            .required("Image is required")
+            .test(
+              "fileSize",
+              "File is too large",
+              (value) => !value || (value && value.size <= 5 * 1024 * 1024)
+            )
+            .test(
+              "fileType",
+              "Unsupported File Format",
+              (value) =>
+                !value ||
+                (value &&
+                  ["image/jpeg", "image/png", "image/jpg"].includes(value.type))
+            ),
         })}
-        onSubmit={(values) => console.log("Form values:", values)}
+        onSubmit={(values, { resetForm }) => {
+          console.log("Form values:", values);
+          const formData = new FormData();
+          formData.append("category", values.category);
+          formData.append("image", values.image);
+          resetForm();
+          setImage(null);
+          dispatch(
+            optimisticallyAddCategory({
+              name: values.category,
+              image: image,
+            })
+          );
+
+          closeHandler();
+          dispatch(addCategory(formData));
+          resetForm();
+          setImage(null);
+        }}
       >
-        {() => (
-          <Form>
-            <div className="flex flex-col gap-4 mt-4">
-              <div className="flex flex-col">
-                <label htmlFor="category">Category Name</label>
-                <Field
-                  type="text"
-                  id="category"
-                  name="category"
-                  placeholder="Enter new category name"
-                  className="py-2 px-4 mt-1 rounded w-full outline-none"
-                  style={{
-                    color: theme.palette.text.primary,
-                    backgroundColor: `${theme.palette.background.default}`,
-                    border: `1px solid ${theme.palette.divider}`,
-                  }}
-                />
-                <ErrorMessage
-                  name="category"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label htmlFor="subcategory">Subcategory</label>
-                <Field
-                  type="text"
-                  id="subcategory"
-                  name="subcategory"
-                  placeholder="Enter new subcategory name"
-                  className="py-2 px-4 mt-1 rounded w-full outline-none"
-                  style={{
-                    color: theme.palette.text.primary,
-                    backgroundColor: theme.palette.background.default,
-                    border: `1px solid ${theme.palette.divider}`,
-                  }}
-                />
-                <ErrorMessage
-                  name="subcategory"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
-                />
-              </div>
-
-              <div className="flex flex-col items-center mt-4">
-                <label htmlFor="photo" className="mb-2  self-start">
-                  Category Image
-                </label>
-                {!image ? (
-                  <label
-                    htmlFor="photo"
-                    className="flex items-center justify-center h-48 w-48 border-2 border-dotted rounded-lg cursor-pointer"
-                    style={{
-                      borderColor: `${theme.palette.border.secondary}50`,
-                      color: theme.palette.text.primary,
-                      backgroundColor: theme.palette.background.default,
-                    }}
-                  >
-                    <span className="text-lg">Image Upload</span>
-                  </label>
-                ) : (
-                  <div className="relative h-48 w-48">
-                    <button
-                      type="button"
-                      onClick={() => setImage(null)}
-                      className="absolute -right-2 -top-3 h-6 w-6 bg-red-600 text-white rounded-full flex items-center justify-center"
-                    >
-                      <ClearIcon sx={{ fontSize: 17 }} />
-                    </button>
-                    <img
-                      className="w-full h-full object-cover border-2 rounded-lg"
-                      src={image}
-                      alt="Preview"
-                      style={{
-                        borderColor: `${theme.palette.border.secondary}50`,
-                      }}
-                    />
-                  </div>
-                )}
-                <input
-                  type="file"
-                  id="photo"
-                  name="photo"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={imageHandler}
-                />
-              </div>
-
-              <Button
-                type="submit"
-                variant="outlined"
-                style={{
-                  color: theme.palette.text.isActive,
-                  backgroundColor: `${theme.palette.text.isActive}20`,
-                }}
-                className="mt-4 w-full"
+        {({ setFieldValue }) => (
+          <Form className="flex flex-col">
+            <div className="mb-4">
+              <label
+                htmlFor="category"
+                className="block mb-1 font-medium text-sm"
               >
-                Add Category
-              </Button>
+                Category Name
+              </label>
+              <Field
+                id="category"
+                name="category"
+                type="text"
+                placeholder="Enter new category name"
+                style={{
+                  backgroundColor: fieldColor,
+                  borderColor: `${borderColor}30`,
+                }}
+                className="py-2 px-4 mt-1 border rounded outline-none focus:ring-1 focus:border-blue-300 w-full"
+              />
+              <ErrorMessage
+                name="category"
+                component="div"
+                className="text-red-500 text-sm mt-1"
+              />
             </div>
+
+            {/* Image Upload Section */}
+            <div className="mb-7">
+              <label htmlFor="image" className="block mb-1 font-medium text-sm">
+                Upload your file here
+              </label>
+              <input
+                type="file"
+                id="image"
+                name="image"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => imageHandler(e, setFieldValue)}
+              />
+              {!image ? (
+                <label
+                  htmlFor="image"
+                  style={{
+                    backgroundColor: fieldColor,
+                    borderColor: `${borderColor}30`,
+                  }}
+                  className="h-32 flex items-center justify-center border rounded cursor-pointer"
+                >
+                  <div className="flex flex-col items-center justify-center opacity-60">
+                    <CloudUploadIcon />
+                    <p>Upload a photo</p>
+                  </div>
+                </label>
+              ) : (
+                <div className="h-32 relative flex items-center justify-center border rounded bg-blue-50">
+                  <button
+                    onClick={clearImage}
+                    className=" bg-red-600 rounded-full absolute -right-2 -top-3 text-white"
+                  >
+                    <ClearIcon />
+                  </button>
+                  <img
+                    src={image}
+                    alt="preview"
+                    className="h-full  object-center"
+                  />
+                </div>
+              )}
+              <ErrorMessage
+                name="image"
+                component="div"
+                className="text-red-500 text-sm mt-1"
+              />
+            </div>
+
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              variant="outlined"
+              sx={{ backgroundColor: btnColor, color: "white" }}
+            >
+              Add Category
+            </Button>
           </Form>
         )}
       </Formik>
-    </Box>
+    </div>
   );
-};
-
-export default CategoryForm;
+}

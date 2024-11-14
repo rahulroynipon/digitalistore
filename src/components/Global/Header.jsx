@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -17,6 +16,8 @@ import { logoutAction, logoutAuth } from "../../features/user/userSlice";
 
 export default function Header({ Ref }) {
   const theme = useTheme();
+  const borderColor = theme.palette.border.secondary;
+  const headerBG = theme.palette.background.paper;
   const { toggleTheme, toggleNav, isOpen } = useMode();
 
   const iconColor = theme.palette.icon.primary;
@@ -31,7 +32,6 @@ export default function Header({ Ref }) {
   };
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const [isScrolled, setIsScrolled] = useState(false);
   const { isAuth, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
@@ -49,20 +49,13 @@ export default function Header({ Ref }) {
     dispatch(logoutAuth());
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 80);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isAuth]);
-
   return (
     <header
-      className={`${
-        isScrolled ? "sticky top-0 shadow-lg" : ""
-      } px-5 md:px-10 py-3 h-[4.5rem] flex justify-between items-center z-30 transition-all duration-500 backdrop-blur`}
+      style={{
+        backgroundColor: `${headerBG}90`,
+        borderBottom: `2px solid ${borderColor}20`,
+      }}
+      className={`top-0 sticky px-5 md:px-10 py-3 h-[4.5rem] flex justify-between items-center z-30 transition-all duration-500 backdrop-blur`}
     >
       <div className="text-xl opacity-80">
         <span className="hidden lg:block">Dashboard</span>
@@ -78,11 +71,6 @@ export default function Header({ Ref }) {
           sx={{ display: { lg: "none" }, ...circle }}
         >
           <MenuIcon sx={{ color: iconColor, fontSize: 19 }} />
-          {/* {isOpen ? (
-            <MenuOpenIcon sx={{ color: iconColor, fontSize: 19 }} />
-          ) : (
-            <MenuIcon sx={{ color: iconColor, fontSize: 19 }} />
-          )} */}
         </Button>
 
         <Button sx={circle}>

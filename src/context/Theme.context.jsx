@@ -40,14 +40,14 @@ export const ThemeProvider = ({ children }) => {
     palette: {
       mode: mode,
       primary: {
-        main: mode === "light" ? indigo[500] : indigo[900],
+        main: mode === "light" ? "#F8F9FA" : "#131920",
       },
       secondary: {
-        main: mode === "light" ? amber[500] : amber[700],
+        main: mode === "light" ? "#f0f0f0" : "#1B232D",
       },
       background: {
-        default: mode === "light" ? "#F8F9FA" : "#131920", //#EBE9E9 #071739
-        paper: mode === "light" ? "#F5F5F5" : "#003366",
+        default: mode === "light" ? "#EDEDED" : "#1b232c",
+        paper: mode === "light" ? "#FFFFFF" : "#131920",
       },
       button: {
         btnH: mode === "light" ? "#e5ecfa" : "#112755",
@@ -55,8 +55,8 @@ export const ThemeProvider = ({ children }) => {
       },
       text: {
         primary: mode === "light" ? "#000000" : "#FFFFFF",
-        secondary: mode === "light" ? "#6a6a76" : "#c0c3c7",
-        isActive: "#4680FF",
+        secondary: mode === "light" ? "#5c5c6b" : "#e0e2e4",
+        isActive: "#6941C5",
       },
       icon: {
         primary: mode === "light" ? "#292929" : "#fff",
@@ -65,13 +65,7 @@ export const ThemeProvider = ({ children }) => {
         primary: mode === "light" ? "#D3D3D3" : "#071739",
         secondary: mode === "light" ? "#071739" : "#D3D3D3",
       },
-      color: {
-        header: mode === "light" ? "#F8F7F7" : "#131920", // #112143be
-        navbar: mode === "light" ? "#F8F9FA" : "#131920", // #F8F7F7  #0F1F41
-        login: mode === "light" ? "#f0f0f0" : "#1B232D",
-      },
     },
-    // header: mode === "light" ? "#FDFDFD" : "#112143",
   });
 
   return (
