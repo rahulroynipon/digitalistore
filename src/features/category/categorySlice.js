@@ -28,9 +28,9 @@ export const getCategory = createAsyncThunk(
 
 export const deleteCategory = createAsyncThunk(
   "category/delete",
-  async (id, thunkAPI) => {
+  async (name, thunkAPI) => {
     try {
-      return await categoryService.deleteCategory(id);
+      return await categoryService.deleteCategory(name);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -58,28 +58,32 @@ export const categorySlice = createSlice({
       };
 
       const isDuplicate = state.categories.some(
-        (cat) => cat.name.toLowerCase() === tempCategory.name.toLowerCase()
+        (cat) =>
+          cat.name.trim().toLowerCase() ===
+          tempCategory.name.trim().toLowerCase()
       );
 
-      if (!isDuplicate) {
-        state.categories = [tempCategory, ...state.categories];
-      } else {
-        state.message = "Category already exists";
-        toast.error(state.message);
+      if (isDuplicate) {
+        toast.error("Category already exists");
+        return;
       }
 
-      console.log(state.categories);
+      state.categories.unshift(tempCategory);
+
+      toast.success("Category added successfully");
     },
 
     optimisticallyDeleteCategory: (state, action) => {
+      const categoryName = action.payload;
       state.categories = state.categories.filter(
-        (item) => item._id !== action.payload
+        (cat) =>
+          cat.name.trim().toLowerCase() !== categoryName.trim().toLowerCase()
       );
+      toast.success("Category deleted successfully");
     },
   },
   extraReducers: (builder) => {
     builder
-      // getCategory
       .addCase(getCategory.pending, (state) => {
         state.isLoading = true;
       })
@@ -93,36 +97,6 @@ export const categorySlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.payload || "Failed to fetch categories";
-      })
-
-      // addCategory
-      .addCase(addCategory.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(addCategory.fulfilled, (state) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        toast.success("New category added successfully");
-      })
-      .addCase(addCategory.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload || "Failed to add category";
-      })
-
-      // deleteCategory
-      .addCase(deleteCategory.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(deleteCategory.fulfilled, (state) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        toast.success("Delete category successfully");
-      })
-      .addCase(deleteCategory.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload || "Failed to delete category";
       });
   },
 });

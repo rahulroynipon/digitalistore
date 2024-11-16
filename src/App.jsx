@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./components/Global/Layout";
 import Dashboard from "./pages/Dashbord";
 import ProductCategory from "./pages/ProductCategory";
+import Brand from "./pages/Brand";
 
 function App() {
   return (
@@ -84,7 +85,7 @@ export const routeItems = [
   {
     id: "brand-category",
     path: "/category/brand",
-    component: <p>Brand Category</p>,
+    component: <Brand />,
   },
   {
     id: "notification",

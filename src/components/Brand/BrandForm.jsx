@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import { useTheme } from "@emotion/react";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { useState } from "react";
+import * as Yup from "yup";
 import ClearIcon from "@mui/icons-material/Clear";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Button } from "@mui/material";
 import { useDispatch } from "react-redux";
 import {
-  addCategory,
-  optimisticallyAddCategory,
-} from "../../features/category/categorySlice";
+  addBrand,
+  optimisticallyAddBrand,
+} from "../../features/brand/brandSlice";
 
-export default function CategoryForm({ closeHandler }) {
+export default function BrandForm({ closeHandler }) {
   const dispatch = useDispatch();
   const [image, setImage] = useState(null);
 
@@ -31,74 +31,69 @@ export default function CategoryForm({ closeHandler }) {
   const theme = useTheme();
   const bgColor = theme.palette.background.default;
   const fieldColor = theme.palette.background.paper;
-  const borderColor = theme.palette.border.secondary;
+  const borderColor = theme.palette.divider;
   const btnColor = theme.palette.text.isActive;
 
   return (
     <div
-      style={{ backgroundColor: bgColor }}
       className="px-5 py-7 max-w-full w-[23rem]"
+      style={{ backgroundColor: bgColor }}
     >
-      <h2 className="text-lg font-semibold mb-4 text-center">
-        Add New Category
-      </h2>
+      <h2 className="text-lg font-semibold mb-4 text-center">Add New Brand</h2>
       <Formik
-        initialValues={{ category: "", image: "" }}
+        initialValues={{ brand: "", image: "" }}
         validationSchema={Yup.object({
-          category: Yup.string().required("Category name is required"),
+          brand: Yup.string().required("Brand name is required"),
           image: Yup.mixed()
             .required("Image is required")
             .test(
               "fileSize",
               "File is too large",
-              (value) => !value || (value && value.size <= 5 * 1024 * 1024)
+              (value) => !value || value.size <= 5 * 1024 * 1024
             )
             .test(
               "fileType",
               "Unsupported File Format",
               (value) =>
                 !value ||
-                (value &&
-                  ["image/jpeg", "image/png", "image/jpg"].includes(value.type))
+                ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
             ),
         })}
         onSubmit={(values, { resetForm }) => {
           const formData = new FormData();
-          formData.append("category", values.category);
+          formData.append("brand", values.brand);
           formData.append("image", values.image);
           dispatch(
-            optimisticallyAddCategory({
-              name: values.category,
+            optimisticallyAddBrand({
+              name: values.brand,
               image: image,
             })
           );
-          dispatch(addCategory(formData));
+          dispatch(addBrand(formData));
           resetForm();
           closeHandler();
         }}
       >
         {({ setFieldValue }) => (
           <Form className="flex flex-col">
+            {/* Brand Name Input */}
             <div className="mb-4">
-              <label
-                htmlFor="category"
-                className="block mb-1 font-medium text-sm"
-              >
-                Category Name
+              <label htmlFor="brand" className="block mb-1 font-medium text-sm">
+                Brand Name
               </label>
               <Field
-                id="category"
-                name="category"
+                id="brand"
+                name="brand"
                 type="text"
-                placeholder="Enter new category name"
+                placeholder="Enter new brand name"
+                className="py-2 px-4 mt-1 border rounded outline-none focus:ring-1 focus:border-blue-300 w-full"
                 style={{
                   backgroundColor: fieldColor,
-                  borderColor: `${borderColor}30`,
+                  borderColor: `${borderColor}`,
                 }}
-                className="py-2 px-4 mt-1 border rounded outline-none focus:ring-1 focus:border-blue-300 w-full"
               />
               <ErrorMessage
-                name="category"
+                name="brand"
                 component="div"
                 className="text-red-500 text-sm mt-1"
               />
@@ -122,7 +117,7 @@ export default function CategoryForm({ closeHandler }) {
                   htmlFor="image"
                   style={{
                     backgroundColor: fieldColor,
-                    borderColor: `${borderColor}30`,
+                    borderColor: `${borderColor}`,
                   }}
                   className="h-32 flex items-center justify-center border rounded cursor-pointer"
                 >
@@ -134,7 +129,8 @@ export default function CategoryForm({ closeHandler }) {
               ) : (
                 <div className="h-32 relative flex items-center justify-center border rounded bg-blue-50">
                   <button
-                    onClick={clearImage}
+                    type="button"
+                    onClick={() => clearImage(setFieldValue)}
                     className=" bg-red-600 rounded-full absolute -right-2 -top-3 text-white"
                   >
                     <ClearIcon />
@@ -142,7 +138,7 @@ export default function CategoryForm({ closeHandler }) {
                   <img
                     src={image}
                     alt="preview"
-                    className="h-full  object-center"
+                    className="h-full object-center"
                   />
                 </div>
               )}
@@ -157,9 +153,13 @@ export default function CategoryForm({ closeHandler }) {
             <Button
               type="submit"
               variant="outlined"
-              sx={{ backgroundColor: btnColor, color: "white" }}
+              sx={{
+                backgroundColor: btnColor,
+                color: "white",
+                ":hover": { backgroundColor: `${btnColor}CC` },
+              }}
             >
-              Add Category
+              Add Brand
             </Button>
           </Form>
         )}

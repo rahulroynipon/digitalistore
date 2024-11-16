@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Grid, Button } from "@mui/material";
-import CategoryTable from "./../components/Category/CategoryTable";
-import CategoryForm from "./../components/Category/CategoryForm";
 import { useTheme } from "@emotion/react";
+import { Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import Modal from "./../components/Global/Modal";
+import BrandTable from "../components/Brand/BrandTable";
+import Modal from "../components/Global/Modal";
+import BrandForm from "../components/Brand/BrandForm";
+import { useState } from "react";
 
-const ProductCategory = () => {
+export default function Brand() {
   const [isOpen, setOpen] = useState(false);
 
   const openHandler = () => {
@@ -18,11 +18,10 @@ const ProductCategory = () => {
   };
 
   const theme = useTheme();
-  const categoryBG = theme.palette.background.paper;
+  const brandBG = theme.palette.background.paper;
   const borderColor = theme.palette.border.secondary;
   const textColor = theme.palette.text.secondary.secondary;
   const buttonColor = theme.palette.text.isActive;
-
   return (
     <section
       style={{
@@ -33,14 +32,13 @@ const ProductCategory = () => {
     >
       <div
         style={{
-          backgroundColor: categoryBG,
+          backgroundColor: brandBG,
           border: `1px solid ${borderColor}20`,
         }}
         className="flex justify-between p-6 flex-wrap gap-3"
       >
-        <h1 className="text-xl font-bold">Category List</h1>
+        <h1 className="text-xl font-bold">Brand List</h1>
         <Button
-          onClick={openHandler}
           sx={{
             backgroundColor: buttonColor,
             color: "white",
@@ -48,17 +46,17 @@ const ProductCategory = () => {
           }}
           variant="contained"
           startIcon={<AddIcon />}
+          onClick={openHandler}
         >
-          Add Category
+          Add Brand
         </Button>
       </div>
-      <Modal isOpen={isOpen} closeHandler={closeHandler} top={25} left={40}>
-        <CategoryForm closeHandler={closeHandler} />
+
+      <Modal isOpen={isOpen} closeHandler={closeHandler}>
+        <BrandForm closeHandler={closeHandler} />
       </Modal>
 
-      <CategoryTable />
+      <BrandTable />
     </section>
   );
-};
-
-export default ProductCategory;
+}

@@ -1,47 +1,47 @@
-import React, { useEffect, useState } from "react";
+import { useTheme } from "@emotion/react";
 import {
-  Button,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Button,
 } from "@mui/material";
-import { useTheme } from "@emotion/react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import {
-  optimisticallyDeleteCategory,
-  deleteCategory,
-  getCategory,
-} from "../../features/category/categorySlice";
+  deleteBrand,
+  getBrand,
+  optimisticallyDeleteBrand,
+} from "../../features/brand/brandSlice";
 import Modal from "../Global/Modal";
 
-const CategoryTable = () => {
+export default function BrandTable() {
   const dispatch = useDispatch();
-  const { categories } = useSelector((state) => state.category);
+  const { brands, isLoading } = useSelector((state) => state.brand);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedCategoryName, setSelectedCategoryName] = useState(null);
+  const [selectedBrandName, setSelectedBrandName] = useState(null);
 
   const deleteOpenHandler = (name) => {
-    setSelectedCategoryName(name);
+    setSelectedBrandName(name);
     setDeleteOpen(true);
   };
 
   const deleteCloseHandler = () => {
     setDeleteOpen(false);
-    setSelectedCategoryName(null);
+    setSelectedBrandName(null);
   };
 
-  const removeCategory = () => {
-    dispatch(optimisticallyDeleteCategory(selectedCategoryName));
-    dispatch(deleteCategory(selectedCategoryName));
+  const removeBrand = () => {
+    dispatch(optimisticallyDeleteBrand(selectedBrandName));
+    dispatch(deleteBrand(selectedBrandName));
     deleteCloseHandler();
   };
 
   useEffect(() => {
-    dispatch(getCategory());
+    dispatch(getBrand());
   }, [dispatch]);
 
   const theme = useTheme();
@@ -59,15 +59,15 @@ const CategoryTable = () => {
   };
 
   return (
-    <div className="w-full overflow-x-auto ">
+    <div className="w-full overflow-x-auto">
       <Modal isOpen={deleteOpen} closeHandler={deleteCloseHandler}>
         <div
           style={{ backgroundColor: rowColor.paper }}
           className="max-w-full w-[20rem] p-5"
         >
-          <h3 className="text-center text-xl">Delete Category</h3>
+          <h3 className="text-center text-xl">Delete Brand</h3>
           <p className="text-xl text-center my-3 text-red-600 font-semibold">
-            {selectedCategoryName}
+            {selectedBrandName}
           </p>
           <p className="text-center mt-2 text-sm opacity-70">
             Are you sure you want to delete this category?
@@ -76,14 +76,14 @@ const CategoryTable = () => {
             <Button
               sx={{ backgroundColor: "red", color: "white" }}
               className=" text-white px-4 py-2 rounded-md"
-              onClick={removeCategory}
+              onClick={removeBrand}
             >
               YES
             </Button>
             <Button
+              onClick={deleteCloseHandler}
               sx={{ color: "white", backgroundColor: "gray" }}
               className="bg-gray-300 text-black px-4 py-2 rounded-md"
-              onClick={deleteCloseHandler}
             >
               NO
             </Button>
@@ -102,15 +102,15 @@ const CategoryTable = () => {
             <TableRow sx={{ backgroundColor: `${isActiveText}15` }}>
               <TableCell sx={{ color: isActiveText }}>SL.</TableCell>
               <TableCell sx={{ color: isActiveText }}>Image</TableCell>
-              <TableCell sx={{ color: isActiveText }}>Category</TableCell>
+              <TableCell sx={{ color: isActiveText }}>Brand</TableCell>
               <TableCell sx={{ color: isActiveText }}>Item</TableCell>
               <TableCell sx={{ color: isActiveText }}>Created at</TableCell>
               <TableCell sx={{ color: isActiveText }}>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {categories?.length ? (
-              categories.map((category, index) => (
+            {brands?.length ? (
+              brands?.map((category, index) => (
                 <TableRow
                   key={category?._id}
                   sx={{
@@ -166,7 +166,7 @@ const CategoryTable = () => {
             ) : (
               <TableRow>
                 <TableCell colSpan={6} className="h-28" align="center">
-                  No categories available
+                  No brands available
                 </TableCell>
               </TableRow>
             )}
@@ -175,6 +175,4 @@ const CategoryTable = () => {
       </TableContainer>
     </div>
   );
-};
-
-export default CategoryTable;
+}
