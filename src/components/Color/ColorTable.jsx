@@ -1,47 +1,47 @@
-import { useTheme } from "@emotion/react";
+import React, { useEffect, useState } from "react";
 import {
+  Button,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Button,
 } from "@mui/material";
+import { useTheme } from "@emotion/react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import {
-  deleteBrand,
-  getBrand,
-  optimisticallyDeleteBrand,
-} from "../../features/brand/brandSlice";
 import Modal from "../Global/Modal";
+import {
+  deleteColor,
+  getColor,
+  optimisticallyDeleteColor,
+} from "../../features/color/colorSlice";
 
-export default function BrandTable() {
+export default function ColorTable() {
   const dispatch = useDispatch();
-  const { brands, isLoading } = useSelector((state) => state.brand);
+  const { colors } = useSelector((state) => state.color);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedBrandName, setSelectedBrandName] = useState(null);
+  const [selectedColorName, setSelectedColorName] = useState(null);
 
   const deleteOpenHandler = (name) => {
-    setSelectedBrandName(name);
+    setSelectedColorName(name);
     setDeleteOpen(true);
   };
 
   const deleteCloseHandler = () => {
     setDeleteOpen(false);
-    setSelectedBrandName(null);
+    setSelectedColorName(null);
   };
 
-  const removeBrand = () => {
-    dispatch(optimisticallyDeleteBrand(selectedBrandName));
-    dispatch(deleteBrand(selectedBrandName));
+  const removeColor = () => {
+    dispatch(optimisticallyDeleteColor(selectedColorName));
+    dispatch(deleteColor(selectedColorName));
     deleteCloseHandler();
   };
 
   useEffect(() => {
-    dispatch(getBrand());
+    dispatch(getColor());
   }, [dispatch]);
 
   const theme = useTheme();
@@ -59,31 +59,31 @@ export default function BrandTable() {
   };
 
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full overflow-x-auto ">
       <Modal isOpen={deleteOpen} closeHandler={deleteCloseHandler}>
         <div
           style={{ backgroundColor: rowColor.paper }}
           className="max-w-full w-[20rem] p-5"
         >
-          <h3 className="text-center text-xl">Delete Brand</h3>
+          <h3 className="text-center text-xl">Delete Color</h3>
           <p className="text-xl text-center my-3 text-red-600 font-semibold">
-            {selectedBrandName}
+            {selectedColorName}
           </p>
           <p className="text-center mt-2 text-sm opacity-70">
-            Are you sure you want to delete this category?
+            Are you sure you want to delete this Color?
           </p>
           <div className="flex justify-around mt-4">
             <Button
               sx={{ backgroundColor: "red", color: "white" }}
               className=" text-white px-4 py-2 rounded-md"
-              onClick={removeBrand}
+              onClick={removeColor}
             >
               YES
             </Button>
             <Button
-              onClick={deleteCloseHandler}
               sx={{ color: "white", backgroundColor: "gray" }}
               className="bg-gray-300 text-black px-4 py-2 rounded-md"
+              onClick={deleteCloseHandler}
             >
               NO
             </Button>
@@ -101,9 +101,9 @@ export default function BrandTable() {
           <TableHead>
             <TableRow sx={{ backgroundColor: `${isActiveText}15` }}>
               <TableCell sx={{ color: isActiveText }}>SL.</TableCell>
-              <TableCell sx={{ color: isActiveText }}>Image</TableCell>
-              <TableCell sx={{ color: isActiveText }}>Brand</TableCell>
-              <TableCell sx={{ color: isActiveText }}>Item</TableCell>
+              <TableCell sx={{ color: isActiveText }}>Color</TableCell>
+              <TableCell sx={{ color: isActiveText }}>Name</TableCell>
+              <TableCell sx={{ color: isActiveText }}>Hex</TableCell>
               <TableCell
                 className="whitespace-nowrap"
                 sx={{ color: isActiveText }}
@@ -114,10 +114,10 @@ export default function BrandTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {brands?.length ? (
-              brands?.map((category, index) => (
+            {colors?.length ? (
+              colors.map((color, index) => (
                 <TableRow
-                  key={category?._id}
+                  key={color?._id}
                   sx={{
                     backgroundColor:
                       index % 2 === 0 ? `${rowColor.paper}90` : rowColor.paper,
@@ -133,35 +133,29 @@ export default function BrandTable() {
                     {index + 1}
                   </TableCell>
                   <TableCell sx={{ padding: 1.5 }}>
-                    <div className="relative bg-white inline-block rounded-md shadow-lg border">
-                      <img
-                        className="h-14 w-14 object-cover rounded-md"
-                        src={category?.image}
-                        alt="Category-image"
-                        onError={(e) => {
-                          e.target.src = image;
-                        }}
-                      />
-                    </div>
+                    <div
+                      style={{ backgroundColor: color?.code }}
+                      className="relative h-14 w-14 inline-block rounded-md shadow-lg border"
+                    ></div>
                   </TableCell>
                   <TableCell
                     className="whitespace-nowrap"
                     sx={{ color: tableTextColor }}
                   >
-                    {category?.name}
+                    {color?.name}
                   </TableCell>
                   <TableCell sx={{ color: tableTextColor }}>
-                    {category?.count}
+                    {color?.code}
                   </TableCell>
                   <TableCell
                     className="whitespace-nowrap"
                     sx={{ color: tableTextColor }}
                   >
-                    {category?.createdAt?.split("T")[0]}
+                    {color?.createdAt?.split("T")[0]}
                   </TableCell>
                   <TableCell sx={{ color: tableTextColor }}>
                     <Button
-                      onClick={() => deleteOpenHandler(category?.name)}
+                      onClick={() => deleteOpenHandler(color?.name)}
                       sx={{
                         ...actionBTN,
                         backgroundColor: "#B9181A20",
@@ -177,7 +171,7 @@ export default function BrandTable() {
             ) : (
               <TableRow>
                 <TableCell colSpan={6} className="h-28" align="center">
-                  No brands available
+                  No colors available
                 </TableCell>
               </TableRow>
             )}

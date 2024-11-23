@@ -91,7 +91,7 @@ export function NavItem({ item, openSubMenu, setOpenSubMenu }) {
               >
                 {item.icon}
               </ListItemIcon>
-              {item.label}
+              <span style={{ fontWeight: 500 }}>{item.label}</span>
             </Box>
 
             {item.subItems && (
@@ -222,6 +222,11 @@ export const navItems = [
         id: "brand-category",
         label: "Brand Category",
         path: "/category/brand",
+      },
+      {
+        id: "color-category",
+        label: "Color Category",
+        path: "/category/color",
       },
     ],
   },

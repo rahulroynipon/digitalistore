@@ -104,7 +104,12 @@ const CategoryTable = () => {
               <TableCell sx={{ color: isActiveText }}>Image</TableCell>
               <TableCell sx={{ color: isActiveText }}>Category</TableCell>
               <TableCell sx={{ color: isActiveText }}>Item</TableCell>
-              <TableCell sx={{ color: isActiveText }}>Created at</TableCell>
+              <TableCell
+                className="whitespace-nowrap"
+                sx={{ color: isActiveText }}
+              >
+                Created at
+              </TableCell>
               <TableCell sx={{ color: isActiveText }}>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -139,13 +144,19 @@ const CategoryTable = () => {
                       />
                     </div>
                   </TableCell>
-                  <TableCell sx={{ color: tableTextColor }}>
+                  <TableCell
+                    className="whitespace-nowrap"
+                    sx={{ color: tableTextColor }}
+                  >
                     {category?.name}
                   </TableCell>
                   <TableCell sx={{ color: tableTextColor }}>
                     {category?.count}
                   </TableCell>
-                  <TableCell sx={{ color: tableTextColor }}>
+                  <TableCell
+                    className="whitespace-nowrap"
+                    sx={{ color: tableTextColor }}
+                  >
                     {category?.createdAt?.split("T")[0]}
                   </TableCell>
                   <TableCell sx={{ color: tableTextColor }}>
