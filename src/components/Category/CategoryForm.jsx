@@ -10,6 +10,7 @@ import {
   addCategory,
   optimisticallyAddCategory,
 } from "../../features/category/categorySlice";
+import ProtectedAction from "../Global/ProtectedAction";
 
 export default function CategoryForm({ closeHandler }) {
   const dispatch = useDispatch();
@@ -77,7 +78,7 @@ export default function CategoryForm({ closeHandler }) {
           closeHandler();
         }}
       >
-        {({ setFieldValue }) => (
+        {({ setFieldValue, handleSubmit }) => (
           <Form className="flex flex-col">
             <div className="mb-4">
               <label
@@ -100,7 +101,7 @@ export default function CategoryForm({ closeHandler }) {
               <ErrorMessage
                 name="category"
                 component="div"
-                className="text-red-500 text-sm mt-1"
+                className="text-red-500 text-xs mt-1"
               />
             </div>
 
@@ -149,18 +150,24 @@ export default function CategoryForm({ closeHandler }) {
               <ErrorMessage
                 name="image"
                 component="div"
-                className="text-red-500 text-sm mt-1"
+                className="text-red-500 text-xs mt-1"
               />
             </div>
 
             {/* Submit Button */}
-            <Button
-              type="submit"
-              variant="outlined"
-              sx={{ backgroundColor: btnColor, color: "white" }}
-            >
-              Add Category
-            </Button>
+            <ProtectedAction action={handleSubmit}>
+              <Button
+                type="button"
+                variant="outlined"
+                sx={{
+                  backgroundColor: btnColor,
+                  color: "white",
+                  width: "100%",
+                }}
+              >
+                Add Category
+              </Button>
+            </ProtectedAction>
           </Form>
         )}
       </Formik>

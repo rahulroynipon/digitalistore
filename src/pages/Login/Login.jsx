@@ -27,7 +27,7 @@ export default function Login() {
   };
 
   useEffect(() => {
-    const from = location.pathname?.state || "/";
+    const from = location.state?.from?.pathname || "/";
 
     if (isAuth) {
       navigate(from);

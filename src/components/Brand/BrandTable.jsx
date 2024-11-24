@@ -17,6 +17,7 @@ import {
   optimisticallyDeleteBrand,
 } from "../../features/brand/brandSlice";
 import Modal from "../Global/Modal";
+import ProtectedAction from "../Global/ProtectedAction";
 
 export default function BrandTable() {
   const dispatch = useDispatch();
@@ -73,13 +74,15 @@ export default function BrandTable() {
             Are you sure you want to delete this category?
           </p>
           <div className="flex justify-around mt-4">
-            <Button
-              sx={{ backgroundColor: "red", color: "white" }}
-              className=" text-white px-4 py-2 rounded-md"
-              onClick={removeBrand}
-            >
-              YES
-            </Button>
+            <ProtectedAction action={removeBrand}>
+              <Button
+                sx={{ backgroundColor: "red", color: "white" }}
+                className=" text-white px-4 py-2 rounded-md"
+                type="button"
+              >
+                YES
+              </Button>
+            </ProtectedAction>
             <Button
               onClick={deleteCloseHandler}
               sx={{ color: "white", backgroundColor: "gray" }}

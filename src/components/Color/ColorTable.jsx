@@ -17,6 +17,7 @@ import {
   getColor,
   optimisticallyDeleteColor,
 } from "../../features/color/colorSlice";
+import ProtectedAction from "../Global/ProtectedAction";
 
 export default function ColorTable() {
   const dispatch = useDispatch();
@@ -73,13 +74,15 @@ export default function ColorTable() {
             Are you sure you want to delete this Color?
           </p>
           <div className="flex justify-around mt-4">
-            <Button
-              sx={{ backgroundColor: "red", color: "white" }}
-              className=" text-white px-4 py-2 rounded-md"
-              onClick={removeColor}
-            >
-              YES
-            </Button>
+            <ProtectedAction action={removeColor}>
+              <Button
+                type="button"
+                sx={{ backgroundColor: "red", color: "white" }}
+                className=" text-white px-4 py-2 rounded-md"
+              >
+                YES
+              </Button>
+            </ProtectedAction>
             <Button
               sx={{ color: "white", backgroundColor: "gray" }}
               className="bg-gray-300 text-black px-4 py-2 rounded-md"

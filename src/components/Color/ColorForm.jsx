@@ -10,6 +10,7 @@ import {
   addColor,
   optimisticallyAddColor,
 } from "../../features/color/colorSlice";
+import ProtectedAction from "../Global/ProtectedAction";
 
 export default function ColorForm({ closeHandler }) {
   const dispatch = useDispatch();
@@ -44,7 +45,7 @@ export default function ColorForm({ closeHandler }) {
           closeHandler();
         }}
       >
-        {({ setFieldValue }) => (
+        {({ setFieldValue, handleSubmit }) => (
           <Form className="flex flex-col">
             <div className="mb-4">
               <label htmlFor="color" className="block mb-1 font-medium text-sm">
@@ -91,13 +92,19 @@ export default function ColorForm({ closeHandler }) {
             </div>
 
             {/* Submit Button */}
-            <Button
-              type="submit"
-              variant="outlined"
-              sx={{ backgroundColor: btnColor, color: "white" }}
-            >
-              Add Color
-            </Button>
+            <ProtectedAction action={handleSubmit}>
+              <Button
+                type="button"
+                variant="outlined"
+                sx={{
+                  backgroundColor: btnColor,
+                  color: "white",
+                  width: "100%",
+                }}
+              >
+                Add Color
+              </Button>
+            </ProtectedAction>
           </Form>
         )}
       </Formik>

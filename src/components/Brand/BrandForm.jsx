@@ -10,6 +10,7 @@ import {
   addBrand,
   optimisticallyAddBrand,
 } from "../../features/brand/brandSlice";
+import ProtectedAction from "../Global/ProtectedAction";
 
 export default function BrandForm({ closeHandler }) {
   const dispatch = useDispatch();
@@ -74,7 +75,7 @@ export default function BrandForm({ closeHandler }) {
           closeHandler();
         }}
       >
-        {({ setFieldValue }) => (
+        {({ setFieldValue, handleSubmit }) => (
           <Form className="flex flex-col">
             {/* Brand Name Input */}
             <div className="mb-4">
@@ -95,7 +96,7 @@ export default function BrandForm({ closeHandler }) {
               <ErrorMessage
                 name="brand"
                 component="div"
-                className="text-red-500 text-sm mt-1"
+                className="text-red-500 text-xs mt-1"
               />
             </div>
 
@@ -145,22 +146,24 @@ export default function BrandForm({ closeHandler }) {
               <ErrorMessage
                 name="image"
                 component="div"
-                className="text-red-500 text-sm mt-1"
+                className="text-red-500 text-xs mt-1"
               />
             </div>
 
             {/* Submit Button */}
-            <Button
-              type="submit"
-              variant="outlined"
-              sx={{
-                backgroundColor: btnColor,
-                color: "white",
-                ":hover": { backgroundColor: `${btnColor}CC` },
-              }}
-            >
-              Add Brand
-            </Button>
+            <ProtectedAction action={handleSubmit}>
+              <Button
+                type="button"
+                variant="outlined"
+                sx={{
+                  backgroundColor: btnColor,
+                  color: "white",
+                  width: "100%",
+                }}
+              >
+                Add Brand
+              </Button>
+            </ProtectedAction>
           </Form>
         )}
       </Formik>

@@ -13,6 +13,7 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutAction, logoutAuth } from "../../features/user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function Header({ Ref }) {
   const theme = useTheme();
@@ -34,6 +35,7 @@ export default function Header({ Ref }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const { isAuth, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -47,6 +49,7 @@ export default function Header({ Ref }) {
     setAnchorEl(event.currentTarget);
     dispatch(logoutAction());
     dispatch(logoutAuth());
+    navigate("/login");
   };
 
   return (
