@@ -22,9 +22,10 @@ export default function Header({ Ref }) {
   const { toggleTheme, toggleNav, isOpen } = useMode();
 
   const iconColor = theme.palette.icon.primary;
+  const btnColor = theme.palette.text.isActive;
 
   const circle = {
-    backgroundColor: theme.palette.button.btnH,
+    backgroundColor: `${btnColor}15`,
     borderRadius: "50%",
     width: 40,
     height: 40,

@@ -11,7 +11,7 @@ import { MdCategory } from "react-icons/md";
 import { MdNotificationsActive } from "react-icons/md";
 import { NavLink, useLocation } from "react-router-dom";
 
-export default function Navbar() {
+export default function Navbar({ navCloseHandler }) {
   const theme = useTheme();
   const [openSubMenu, setOpenSubMenu] = useState(null); // Track open submenu
   const logoColor = theme.palette.text.isActive;
@@ -30,6 +30,7 @@ export default function Navbar() {
             item={item}
             openSubMenu={openSubMenu}
             setOpenSubMenu={setOpenSubMenu}
+            navCloseHandler={navCloseHandler}
           />
         ))}
       </div>
@@ -37,7 +38,12 @@ export default function Navbar() {
   );
 }
 
-export function NavItem({ item, openSubMenu, setOpenSubMenu }) {
+export function NavItem({
+  item,
+  openSubMenu,
+  setOpenSubMenu,
+  navCloseHandler,
+}) {
   const theme = useTheme();
   const location = useLocation();
   const navTextColor = theme.palette.text.secondary;
@@ -57,6 +63,7 @@ export function NavItem({ item, openSubMenu, setOpenSubMenu }) {
     <>
       <NavLink
         to={!item?.subItems ? item?.path : null}
+        onClick={!item?.subItems ? navCloseHandler : null}
         style={{
           color: isActive ? isActiveText : navTextColor,
           transition: "color 0.1s ease-in-out",
@@ -123,6 +130,7 @@ export function NavItem({ item, openSubMenu, setOpenSubMenu }) {
           >
             {item.subItems.map((subItem) => (
               <NavLink
+                onClick={navCloseHandler}
                 key={subItem.id}
                 to={subItem?.path}
                 style={({ isActive }) => ({

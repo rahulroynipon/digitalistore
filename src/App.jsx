@@ -10,7 +10,6 @@ import Login from "./pages/Login/Login";
 const Dashboard = React.lazy(() => import("./pages/Dashbord"));
 const ProductCategory = React.lazy(() => import("./pages/ProductCategory"));
 const Brand = React.lazy(() => import("./pages/Brand"));
-const ProductUpload = React.lazy(() => import("./pages/ProductUpload"));
 const ProductUploader = React.lazy(() => import("./pages/ProductUploader"));
 const Color = React.lazy(() => import("./pages/Color"));
 //const NotFound = React.lazy(() => import("./pages/NotFound"));

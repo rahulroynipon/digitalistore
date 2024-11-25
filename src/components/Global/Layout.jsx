@@ -14,6 +14,10 @@ export default function Layout() {
   const navRef = useRef();
   const toggleBtnRef = useRef();
 
+  const navCloseHandler = () => {
+    setIsOpen(false);
+  };
+
   useEffect(() => {
     const navToggle = (e) => {
       if (
@@ -45,7 +49,7 @@ export default function Layout() {
             borderColor: `${borderColor}20`,
           }}
         >
-          <Navbar />
+          <Navbar navCloseHandler={navCloseHandler} />
         </aside>
 
         <div className={`flex-1 lg:ml-72 `}>
