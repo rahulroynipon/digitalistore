@@ -57,7 +57,9 @@ export default function BrandForm({ closeHandler }) {
               "Unsupported File Format",
               (value) =>
                 !value ||
-                ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
+                ["image/jpeg", "image/png", "image/jpg", "image/webp"].includes(
+                  value.type
+                )
             ),
         })}
         onSubmit={(values, { resetForm }) => {

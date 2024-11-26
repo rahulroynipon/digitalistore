@@ -52,7 +52,7 @@ const ProductCategory = () => {
           Add Category
         </Button>
       </div>
-      <Modal isOpen={isOpen} closeHandler={closeHandler} top={25} left={40}>
+      <Modal isOpen={isOpen} closeHandler={closeHandler}>
         <CategoryForm closeHandler={closeHandler} />
       </Modal>
 

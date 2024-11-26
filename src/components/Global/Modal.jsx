@@ -31,7 +31,7 @@ export default function Modal({ isOpen, children, closeHandler }) {
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.3 }}
               onClick={(e) => e.stopPropagation()}
-              className=" rounded-lg overflow-hidden"
+              className="rounded-lg overflow-hidden"
             >
               {children}
             </motion.div>

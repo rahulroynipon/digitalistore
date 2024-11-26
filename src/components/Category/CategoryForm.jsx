@@ -60,7 +60,12 @@ export default function CategoryForm({ closeHandler }) {
               (value) =>
                 !value ||
                 (value &&
-                  ["image/jpeg", "image/png", "image/jpg"].includes(value.type))
+                  [
+                    "image/jpeg",
+                    "image/png",
+                    "image/jpg",
+                    "image/webp",
+                  ].includes(value.type))
             ),
         })}
         onSubmit={(values, { resetForm }) => {

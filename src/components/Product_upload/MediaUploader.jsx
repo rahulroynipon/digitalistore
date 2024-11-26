@@ -34,10 +34,8 @@ export default function MediaUploader({
   };
 
   useEffect(() => {
-    if (reset) {
-      setSelectedImages([]);
-    }
-  }, [reset]);
+    setSelectedImages([]);
+  }, [reset, isSubmitting]);
 
   const theme = useTheme();
   const fieldColor = theme.palette.background.paper;

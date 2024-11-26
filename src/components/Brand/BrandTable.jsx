@@ -18,6 +18,8 @@ import {
 } from "../../features/brand/brandSlice";
 import Modal from "../Global/Modal";
 import ProtectedAction from "../Global/ProtectedAction";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 export default function BrandTable() {
   const dispatch = useDispatch();
@@ -102,22 +104,35 @@ export default function BrandTable() {
       >
         <Table sx={{ minWidth: "450px", tableLayout: "auto" }}>
           <TableHead>
-            <TableRow sx={{ backgroundColor: `${isActiveText}15` }}>
-              <TableCell sx={{ color: isActiveText }}>SL.</TableCell>
-              <TableCell sx={{ color: isActiveText }}>Image</TableCell>
-              <TableCell sx={{ color: isActiveText }}>Brand</TableCell>
-              <TableCell sx={{ color: isActiveText }}>Item</TableCell>
-              <TableCell
-                className="whitespace-nowrap"
-                sx={{ color: isActiveText }}
-              >
-                Created at
-              </TableCell>
-              <TableCell sx={{ color: isActiveText }}>Action</TableCell>
+            <TableRow
+              sx={{
+                backgroundColor: `${isActiveText}20`,
+                textTransform: "uppercase",
+              }}
+            >
+              {["SL.", "Image", "Brand", "Item", "Created at", "Action"].map(
+                (item, index) => (
+                  <TableCell
+                    key={index}
+                    className="whitespace-nowrap"
+                    sx={{ color: isActiveText }}
+                  >
+                    {item}
+                  </TableCell>
+                )
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
-            {brands?.length ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={6} className="h-52" align="center">
+                  <Box>
+                    <CircularProgress sx={{ color: isActiveText }} />
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ) : brands?.length ? (
               brands?.map((category, index) => (
                 <TableRow
                   key={category?._id}
@@ -138,7 +153,7 @@ export default function BrandTable() {
                   <TableCell sx={{ padding: 1.5 }}>
                     <div className="relative bg-white inline-block rounded-md shadow-lg border">
                       <img
-                        className="h-14 w-14 object-cover rounded-md"
+                        className="h-14 w-14 object-contain rounded-md"
                         src={category?.image}
                         alt="Category-image"
                         onError={(e) => {
@@ -179,7 +194,7 @@ export default function BrandTable() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} className="h-28" align="center">
+                <TableCell colSpan={6} className="h-52" align="center">
                   No brands available
                 </TableCell>
               </TableRow>

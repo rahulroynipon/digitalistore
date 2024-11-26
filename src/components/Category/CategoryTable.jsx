@@ -18,10 +18,12 @@ import {
 } from "../../features/category/categorySlice";
 import Modal from "../Global/Modal";
 import ProtectedAction from "../Global/ProtectedAction";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 const CategoryTable = () => {
   const dispatch = useDispatch();
-  const { categories } = useSelector((state) => state.category);
+  const { categories, isLoading } = useSelector((state) => state.category);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedCategoryName, setSelectedCategoryName] = useState(null);
 
@@ -60,7 +62,7 @@ const CategoryTable = () => {
   };
 
   return (
-    <div className="w-full overflow-x-auto ">
+    <div className="w-full overflow-x-auto">
       <Modal isOpen={deleteOpen} closeHandler={deleteCloseHandler}>
         <div
           style={{ backgroundColor: rowColor.paper }}
@@ -102,22 +104,35 @@ const CategoryTable = () => {
       >
         <Table sx={{ minWidth: "450px", tableLayout: "auto" }}>
           <TableHead>
-            <TableRow sx={{ backgroundColor: `${isActiveText}15` }}>
-              <TableCell sx={{ color: isActiveText }}>SL.</TableCell>
-              <TableCell sx={{ color: isActiveText }}>Image</TableCell>
-              <TableCell sx={{ color: isActiveText }}>Category</TableCell>
-              <TableCell sx={{ color: isActiveText }}>Item</TableCell>
-              <TableCell
-                className="whitespace-nowrap"
-                sx={{ color: isActiveText }}
-              >
-                Created at
-              </TableCell>
-              <TableCell sx={{ color: isActiveText }}>Action</TableCell>
+            <TableRow
+              sx={{
+                backgroundColor: `${isActiveText}20`,
+                textTransform: "uppercase",
+              }}
+            >
+              {["SL.", "Image", "Category", "Item", "Created at", "Action"].map(
+                (item, index) => (
+                  <TableCell
+                    key={index}
+                    className="whitespace-nowrap"
+                    sx={{ color: isActiveText }}
+                  >
+                    {item}
+                  </TableCell>
+                )
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
-            {categories?.length ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={6} className="h-52" align="center">
+                  <Box>
+                    <CircularProgress sx={{ color: isActiveText }} />
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ) : categories?.length ? (
               categories.map((category, index) => (
                 <TableRow
                   key={category?._id}
@@ -179,7 +194,7 @@ const CategoryTable = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} className="h-28" align="center">
+                <TableCell colSpan={6} className="h-52" align="center">
                   No categories available
                 </TableCell>
               </TableRow>

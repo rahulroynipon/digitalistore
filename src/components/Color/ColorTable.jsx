@@ -18,10 +18,12 @@ import {
   optimisticallyDeleteColor,
 } from "../../features/color/colorSlice";
 import ProtectedAction from "../Global/ProtectedAction";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 export default function ColorTable() {
   const dispatch = useDispatch();
-  const { colors } = useSelector((state) => state.color);
+  const { colors, isLoading } = useSelector((state) => state.color);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedColorName, setSelectedColorName] = useState(null);
 
@@ -102,22 +104,35 @@ export default function ColorTable() {
       >
         <Table sx={{ minWidth: "450px", tableLayout: "auto" }}>
           <TableHead>
-            <TableRow sx={{ backgroundColor: `${isActiveText}15` }}>
-              <TableCell sx={{ color: isActiveText }}>SL.</TableCell>
-              <TableCell sx={{ color: isActiveText }}>Color</TableCell>
-              <TableCell sx={{ color: isActiveText }}>Name</TableCell>
-              <TableCell sx={{ color: isActiveText }}>Hex</TableCell>
-              <TableCell
-                className="whitespace-nowrap"
-                sx={{ color: isActiveText }}
-              >
-                Created at
-              </TableCell>
-              <TableCell sx={{ color: isActiveText }}>Action</TableCell>
+            <TableRow
+              sx={{
+                backgroundColor: `${isActiveText}20`,
+                textTransform: "uppercase",
+              }}
+            >
+              {["SL.", "Color", "Name", "Hex", "Created at", "Action"].map(
+                (item, index) => (
+                  <TableCell
+                    key={index}
+                    className="whitespace-nowrap"
+                    sx={{ color: isActiveText }}
+                  >
+                    {item}
+                  </TableCell>
+                )
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
-            {colors?.length ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={6} className="h-52" align="center">
+                  <Box>
+                    <CircularProgress sx={{ color: isActiveText }} />
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ) : colors?.length ? (
               colors.map((color, index) => (
                 <TableRow
                   key={color?._id}
@@ -173,7 +188,7 @@ export default function ColorTable() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} className="h-28" align="center">
+                <TableCell colSpan={6} className="h-52" align="center">
                   No colors available
                 </TableCell>
               </TableRow>
