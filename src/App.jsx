@@ -12,6 +12,7 @@ const ProductCategory = React.lazy(() => import("./pages/ProductCategory"));
 const Brand = React.lazy(() => import("./pages/Brand"));
 const Color = React.lazy(() => import("./pages/Color"));
 const ProductUploader = React.lazy(() => import("./pages/ProductUploader"));
+const ProductView = React.lazy(() => import("./pages/ProductView"));
 const ProductList = React.lazy(() => import("./pages/ProductList"));
 
 //const NotFound = React.lazy(() => import("./pages/NotFound"));
@@ -58,7 +59,7 @@ export const routeItems = [
   {
     id: "product-view",
     path: "/products/view",
-    component: <p>ProductView</p>, // Replace with actual component
+    component: <ProductView />, // Replace with actual component
   },
   {
     id: "product-upload",

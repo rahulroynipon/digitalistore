@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addProductId,
   deleteProduct,
   getProduct,
   optimisticallyDeleteProduct,
@@ -20,14 +21,43 @@ import {
   TableRow,
   TableCell,
   Button,
+  TableSortLabel,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export default function ProductTable() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { products, isLoading } = useSelector((state) => state.product);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedProductID, setSelectedProductID] = useState(null);
   const [selectedProductName, setSelectedProductName] = useState(null);
+  const [sortedProduct, setSortedProduct] = useState([]);
+  const [sortConfig, setSortConfig] = useState({
+    key: "name",
+    direction: "asc",
+  });
+
+  const TableHeader = [
+    { label: "SL.", key: null },
+    { label: "Product", key: "name" },
+    { label: "Category", key: "category" },
+    { label: "Brand", key: "brand" },
+    { label: "Price", key: "price" },
+    { label: "Stock", key: "stock" },
+    { label: "Rating", key: "rating" },
+    { label: "Order", key: "order" },
+    { label: "Actions", key: null },
+  ];
+  useEffect(() => {
+    dispatch(getProduct());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (products?.length) {
+      setSortedProduct([...products]);
+    }
+  }, [products]);
 
   const deleteOpenHandler = (id, name) => {
     setSelectedProductID(id);
@@ -47,9 +77,25 @@ export default function ProductTable() {
     deleteCloseHandler();
   };
 
-  useEffect(() => {
-    dispatch(getProduct());
-  }, [dispatch]);
+  const handleSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+
+    const sorted = [...categories].sort((a, b) => {
+      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
+      return 0;
+    });
+    setSortedProduct(sorted);
+  };
+
+  const viewProductHandler = (id) => {
+    dispatch(addProductId(id));
+    navigate("/products/view");
+  };
 
   const theme = useTheme();
   const isActiveText = theme.palette.text.isActive;
@@ -117,30 +163,29 @@ export default function ProductTable() {
                 textTransform: "uppercase",
               }}
             >
-              {[
-                "SL.",
-                "Product",
-                "Category",
-                "Brand",
-                "Price",
-                "Stock",
-                "Rating",
-                "Order",
-                "Action",
-              ].map((header, index) => (
+              {TableHeader.map(({ label, key }, index) => (
                 <TableCell
                   key={index}
+                  sx={{ color: isActiveText }}
                   align={
-                    ["Stock", "Rating", "Order", "Action"].includes(header)
+                    ["Stock", "Rating", "Order", "Actions"].includes(label)
                       ? "center"
-                      : ""
+                      : "left"
                   }
-                  sx={{
-                    textTransform: "uppercase",
-                    color: isActiveText,
-                  }}
                 >
-                  {header}
+                  {key ? (
+                    <TableSortLabel
+                      active={sortConfig.key === key}
+                      direction={
+                        sortConfig.key === key ? sortConfig.direction : "asc"
+                      }
+                      onClick={() => handleSort(key)}
+                    >
+                      <span className=" font-semibold"> {label}</span>
+                    </TableSortLabel>
+                  ) : (
+                    <span className=" font-semibold"> {label}</span>
+                  )}
                 </TableCell>
               ))}
             </TableRow>
@@ -156,8 +201,8 @@ export default function ProductTable() {
                   </Box>
                 </TableCell>
               </TableRow>
-            ) : products?.length ? (
-              products?.map((item, index) => (
+            ) : sortedProduct?.length ? (
+              sortedProduct?.map((item, index) => (
                 <TableRow
                   key={item?._id}
                   sx={{
@@ -269,6 +314,7 @@ export default function ProductTable() {
                           marginLeft: "8px",
                         }}
                         size="small"
+                        onClick={() => viewProductHandler(item?._id)}
                       >
                         <VisibilityIcon size="small" />
                       </Button>

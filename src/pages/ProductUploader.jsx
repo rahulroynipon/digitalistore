@@ -21,13 +21,6 @@ import { Button } from "@mui/material";
 import { addProduct } from "../features/product/productSlice.js";
 
 export default function ProductUploader() {
-  const theme = useTheme();
-  const bgColor = theme.palette.background.paper;
-  const fieldColor = theme.palette.background.default;
-  const borderColor = theme.palette.border.secondary;
-  const textColor = theme.palette.text.primary;
-  const btnColor = theme.palette.text.isActive;
-
   const { categories } = useSelector((state) => state.category);
   const { brands } = useSelector((state) => state.brand);
   const { colors } = useSelector((state) => state.color);
@@ -40,6 +33,13 @@ export default function ProductUploader() {
     dispatch(getBrand());
     dispatch(getColor());
   }, [dispatch]);
+
+  const theme = useTheme();
+  const bgColor = theme.palette.background.paper;
+  const fieldColor = theme.palette.background.default;
+  const borderColor = theme.palette.border.secondary;
+  const textColor = theme.palette.text.primary;
+  const btnColor = theme.palette.text.isActive;
 
   return (
     <section style={{ maxWidth: "93vw" }} className="m-3 mt-5 md:m-5 ">

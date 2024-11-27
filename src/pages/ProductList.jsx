@@ -4,9 +4,11 @@ import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ProductTable from "../components/Product_list/ProductTable";
+import { useSelector } from "react-redux";
 
 export default function ProductList() {
   const navigate = useNavigate();
+  const { totalProduct } = useSelector((state) => state.product);
 
   const addProduct = () => {
     navigate("/products/upload");
@@ -25,13 +27,16 @@ export default function ProductList() {
       style={{
         color: textColor,
       }}
-      className="m-3 mt-5 md:m-5 rounded-lg overflow-auto max-w-[93vw] md:max-w-[94vw]  lg:max-w-[68vw] xl:max-w-[100vw]"
+      className="m-3 mt-5 md:m-5  overflow-auto max-w-[93vw] md:max-w-[94vw]  lg:max-w-[68vw] xl:max-w-[100vw]"
     >
+      {/* table title */}
       <div
         style={{ color: textColor, backgroundColor: rowColor.paper }}
         className="flex justify-between p-6 flex-wrap gap-3"
       >
-        <h1 className="text-xl font-bold">Best Selling Products</h1>
+        <h1 className="text-xl font-bold">
+          Best Selling Products ({totalProduct}){" "}
+        </h1>
         <Button
           variant="text"
           startIcon={<AddIcon />}

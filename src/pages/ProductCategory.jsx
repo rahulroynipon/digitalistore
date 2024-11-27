@@ -29,7 +29,7 @@ const ProductCategory = () => {
         color: textColor,
         maxWidth: "93vw",
       }}
-      className="m-3 mt-5 md:m-5 rounded-lg overflow-auto"
+      className="m-3 mt-5 md:m-5 overflow-auto"
     >
       <div
         style={{

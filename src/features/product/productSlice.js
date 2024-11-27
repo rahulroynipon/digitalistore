@@ -38,8 +38,22 @@ export const deleteProduct = createAsyncThunk(
   }
 );
 
+export const viewProduct = createAsyncThunk(
+  "product/view",
+  async (id, thunkAPI) => {
+    try {
+      return await productService.getProductByID(id);
+    } catch (error) {
+      console.error("product view", error);
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 const initialState = {
   products: [],
+  viewProductId: "",
+  totalProduct: 0,
   isLoading: false,
   isSuccess: false,
   isError: false,
@@ -55,7 +69,13 @@ export const productSlice = createSlice({
         (product) => product?._id !== action.payload
       );
 
+      state.totalProduct -= 1;
+
       toast.success("Product deleted successfully");
+    },
+
+    addProductId: (state, action) => {
+      state.viewProductId = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -95,6 +115,7 @@ export const productSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.products = action.payload?.data || [];
+        state.totalProduct = action.payload?.pagination?.totalProducts || 0;
         state.isError = false;
         state.message = action.payload?.message || "";
       })
@@ -103,9 +124,29 @@ export const productSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.message = action.payload || "";
+      })
+      .addCase(viewProduct.pending, (state) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+        state.isError = false;
+        state.message = "";
+      })
+      .addCase(viewProduct.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.products = action.payload?.data || [];
+        state.isError = false;
+        state.message = action.payload?.message || "";
+      })
+      .addCase(viewProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.message = action.payload || "";
       });
   },
 });
 
-export const { optimisticallyDeleteProduct } = productSlice.actions;
+export const { optimisticallyDeleteProduct, addProductId } =
+  productSlice.actions;
 export default productSlice.reducer;

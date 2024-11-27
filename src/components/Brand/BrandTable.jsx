@@ -7,6 +7,7 @@ import {
   TableHead,
   TableRow,
   Button,
+  TableSortLabel,
 } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,6 +27,30 @@ export default function BrandTable() {
   const { brands, isLoading } = useSelector((state) => state.brand);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedBrandName, setSelectedBrandName] = useState(null);
+  const [sortedBrand, setSortedBrand] = useState([]);
+  const [sortConfig, setSortConfig] = useState({
+    key: "name",
+    direction: "asc",
+  });
+
+  const TableHeader = [
+    { label: "SL.", key: null },
+    { label: "Image", key: null },
+    { label: "Brand", key: "name" },
+    { label: "Item", key: "item" },
+    { label: "Created at", key: "createdAt" },
+    { label: "Action", key: null },
+  ];
+
+  useEffect(() => {
+    dispatch(getBrand());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (brands?.length) {
+      setSortedBrand([...brands]);
+    }
+  }, [brands]);
 
   const deleteOpenHandler = (name) => {
     setSelectedBrandName(name);
@@ -43,9 +68,20 @@ export default function BrandTable() {
     deleteCloseHandler();
   };
 
-  useEffect(() => {
-    dispatch(getBrand());
-  }, [dispatch]);
+  const handleSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+
+    const sorted = [...categories].sort((a, b) => {
+      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
+      return 0;
+    });
+    setSortedCategory(sorted);
+  };
 
   const theme = useTheme();
   const isActiveText = theme.palette.text.isActive;
@@ -110,17 +146,23 @@ export default function BrandTable() {
                 textTransform: "uppercase",
               }}
             >
-              {["SL.", "Image", "Brand", "Item", "Created at", "Action"].map(
-                (item, index) => (
-                  <TableCell
-                    key={index}
-                    className="whitespace-nowrap"
-                    sx={{ color: isActiveText }}
-                  >
-                    {item}
-                  </TableCell>
-                )
-              )}
+              {TableHeader.map(({ label, key }, index) => (
+                <TableCell key={index} sx={{ color: isActiveText }}>
+                  {key ? (
+                    <TableSortLabel
+                      active={sortConfig.key === key}
+                      direction={
+                        sortConfig.key === key ? sortConfig.direction : "asc"
+                      }
+                      onClick={() => handleSort(key)}
+                    >
+                      <span className=" font-semibold"> {label}</span>
+                    </TableSortLabel>
+                  ) : (
+                    <span className=" font-semibold"> {label}</span>
+                  )}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>

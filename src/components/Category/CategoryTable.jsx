@@ -7,6 +7,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  CircularProgress,
+  Box,
+  TableSortLabel,
 } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -18,14 +21,37 @@ import {
 } from "../../features/category/categorySlice";
 import Modal from "../Global/Modal";
 import ProtectedAction from "../Global/ProtectedAction";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
 
 const CategoryTable = () => {
   const dispatch = useDispatch();
   const { categories, isLoading } = useSelector((state) => state.category);
+
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedCategoryName, setSelectedCategoryName] = useState(null);
+  const [sortedCategory, setSortedCategory] = useState([]);
+  const [sortConfig, setSortConfig] = useState({
+    key: "name",
+    direction: "asc",
+  });
+
+  const TableHeader = [
+    { label: "SL.", key: null },
+    { label: "Image", key: null },
+    { label: "Category", key: "name" },
+    { label: "Item", key: "item" },
+    { label: "Created at", key: "createdAt" },
+    { label: "Action", key: null },
+  ];
+
+  useEffect(() => {
+    dispatch(getCategory());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (categories?.length) {
+      setSortedCategory([...categories]);
+    }
+  }, [categories]);
 
   const deleteOpenHandler = (name) => {
     setSelectedCategoryName(name);
@@ -43,9 +69,20 @@ const CategoryTable = () => {
     deleteCloseHandler();
   };
 
-  useEffect(() => {
-    dispatch(getCategory());
-  }, [dispatch]);
+  const handleSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+
+    const sorted = [...categories].sort((a, b) => {
+      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
+      return 0;
+    });
+    setSortedCategory(sorted);
+  };
 
   const theme = useTheme();
   const isActiveText = theme.palette.text.isActive;
@@ -54,6 +91,7 @@ const CategoryTable = () => {
   const rowColor = theme.palette.background;
   const rowBorderColor = theme.palette.divider;
 
+  // Button styling for action buttons
   const actionBTN = {
     width: 35,
     height: 35,
@@ -63,6 +101,7 @@ const CategoryTable = () => {
 
   return (
     <div className="w-full overflow-x-auto">
+      {/* Delete Confirmation Modal */}
       <Modal isOpen={deleteOpen} closeHandler={deleteCloseHandler}>
         <div
           style={{ backgroundColor: rowColor.paper }}
@@ -79,7 +118,7 @@ const CategoryTable = () => {
             <ProtectedAction action={removeCategory}>
               <Button
                 sx={{ backgroundColor: "red", color: "white" }}
-                className=" text-white px-4 py-2 rounded-md"
+                className="text-white px-4 py-2 rounded-md"
                 type="button"
               >
                 YES
@@ -95,6 +134,8 @@ const CategoryTable = () => {
           </div>
         </div>
       </Modal>
+
+      {/* Table Container */}
       <TableContainer
         sx={{
           backgroundColor: tableColor,
@@ -110,17 +151,23 @@ const CategoryTable = () => {
                 textTransform: "uppercase",
               }}
             >
-              {["SL.", "Image", "Category", "Item", "Created at", "Action"].map(
-                (item, index) => (
-                  <TableCell
-                    key={index}
-                    className="whitespace-nowrap"
-                    sx={{ color: isActiveText }}
-                  >
-                    {item}
-                  </TableCell>
-                )
-              )}
+              {TableHeader.map(({ label, key }, index) => (
+                <TableCell key={index} sx={{ color: isActiveText }}>
+                  {key ? (
+                    <TableSortLabel
+                      active={sortConfig.key === key}
+                      direction={
+                        sortConfig.key === key ? sortConfig.direction : "asc"
+                      }
+                      onClick={() => handleSort(key)}
+                    >
+                      <span className=" font-semibold"> {label}</span>
+                    </TableSortLabel>
+                  ) : (
+                    <span className=" font-semibold"> {label}</span>
+                  )}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -132,8 +179,8 @@ const CategoryTable = () => {
                   </Box>
                 </TableCell>
               </TableRow>
-            ) : categories?.length ? (
-              categories.map((category, index) => (
+            ) : sortedCategory?.length ? (
+              sortedCategory.map((category, index) => (
                 <TableRow
                   key={category?._id}
                   sx={{
@@ -155,9 +202,9 @@ const CategoryTable = () => {
                       <img
                         className="h-14 w-14 object-cover rounded-md"
                         src={category?.image}
-                        alt="Category-image"
+                        alt="Category"
                         onError={(e) => {
-                          e.target.src = image;
+                          e.target.src = "/default-category.jpg";
                         }}
                       />
                     </div>

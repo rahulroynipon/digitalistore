@@ -46,8 +46,22 @@ const deleteProduct = async (id) => {
   }
 };
 
+const getProductByID = async (id) => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/product/${id}`
+    );
+    if (response.data) {
+      return response.data;
+    }
+  } catch (error) {
+    throw error.response?.data?.message || error.message;
+  }
+};
+
 export const productService = {
   createProduct,
   getAllProduct,
   deleteProduct,
+  getProductByID,
 };
