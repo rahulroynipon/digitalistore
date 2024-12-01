@@ -19,11 +19,11 @@ export default function LoadingSpin({ colSpan }) {
   );
 }
 
-export function Availablity({ text }) {
+export function Availablity({ text, colSpan = 7 }) {
   return (
     <>
       <TableRow>
-        <TableCell colSpan={7} className="h-52" align="center">
+        <TableCell colSpan={colSpan} className="h-52" align="center">
           {text}
         </TableCell>
       </TableRow>

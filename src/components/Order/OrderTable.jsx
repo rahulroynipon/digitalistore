@@ -16,12 +16,18 @@ import EditIcon from "@mui/icons-material/Edit";
 import UploadIcon from "@mui/icons-material/Upload";
 import SelectedForm from "../Global/SelectedForm";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { optimisticallyUpdateStatus } from "../../features/order/orderSlice";
+import {
+  optimisticallyUpdateStatus,
+  updateOrder,
+} from "../../features/order/orderSlice";
+import { useNavigate } from "react-router-dom";
+import ProtectedAction from "../Global/ProtectedAction";
 
 export default function OrderTable({ filter, sortedOrders, setSortedOrders }) {
   const { background, border, divider, text, text1, active } = useThemeColors();
   const { isLoading, orders } = useSelector((state) => state.order);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [newStatus, setNewStatus] = useState(null);
   const [editID, setEditID] = useState(null);
   const [sortConfig, setSortConfig] = useState({
@@ -31,7 +37,7 @@ export default function OrderTable({ filter, sortedOrders, setSortedOrders }) {
 
   const TableHeader = [
     { label: "Sl.", key: null, align: "left" },
-    { label: "Order Id", key: null, align: "left" },
+    { label: "Order Id", key: null, align: "center" },
     { label: "Value", key: "totalOrderValue", align: "right" },
     { label: "Unique Items", key: "products.length", align: "center" },
     { label: "Status", key: "orderStatus", align: "center" },
@@ -76,8 +82,13 @@ export default function OrderTable({ filter, sortedOrders, setSortedOrders }) {
 
   const updateStatusHandler = (id, status) => {
     dispatch(optimisticallyUpdateStatus({ id, status }));
+    dispatch(updateOrder({ id, status }));
     setEditID(null);
     setNewStatus(null);
+  };
+
+  const viewOrderHandler = (id) => {
+    navigate(`/orders/view/${id}`);
   };
 
   const actionBTNStyle = {
@@ -139,9 +150,9 @@ export default function OrderTable({ filter, sortedOrders, setSortedOrders }) {
                 }}
               >
                 <TableCell sx={{ fontWeight: 500 }}>{index + 1}</TableCell>
-                <TableCell>{item?._id}</TableCell>
+                <TableCell align="center">{item?._id}</TableCell>
                 <TableCell align="right">
-                  {item?.totalOrderValue?.toFixed(2) || 0}
+                  ৳{item?.totalOrderValue?.toFixed(2) || 0}
                 </TableCell>
                 <TableCell align="center">
                   {item?.products?.length || 0}
@@ -160,19 +171,23 @@ export default function OrderTable({ filter, sortedOrders, setSortedOrders }) {
                 <TableCell align="center">
                   {item?.createdAt?.split("T")[0] || "N/A"}
                 </TableCell>
-                <TableCell align="center">
+                <TableCell
+                  align="center"
+                  style={{ display: "flex", gap: 5, justifyContent: "center" }}
+                >
                   {editID !== item?._id ? (
-                    <Button
-                      sx={{
-                        ...actionBTNStyle,
-                        marginLeft: 1,
-                        backgroundColor: `${active}20`,
-                        color: active,
-                      }}
-                      onClick={() => setEditID(item?._id)}
-                    >
-                      <EditIcon />
-                    </Button>
+                    <ProtectedAction action={() => setEditID(item?._id)}>
+                      <Button
+                        sx={{
+                          ...actionBTNStyle,
+                          marginLeft: 1,
+                          backgroundColor: `${active}20`,
+                          color: active,
+                        }}
+                      >
+                        <EditIcon />
+                      </Button>
+                    </ProtectedAction>
                   ) : (
                     <Button
                       sx={{
@@ -195,10 +210,10 @@ export default function OrderTable({ filter, sortedOrders, setSortedOrders }) {
                   <Button
                     sx={{
                       ...actionBTNStyle,
-                      marginLeft: 1,
                       backgroundColor: "#2E7D3220",
                       color: "#2E7D32",
                     }}
+                    onClick={() => viewOrderHandler(item?._id)}
                   >
                     <VisibilityIcon />
                   </Button>

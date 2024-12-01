@@ -26,7 +26,22 @@ const updateOrderStatus = async (id, status) => {
   }
 };
 
+const viewOrderById = async (id) => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/order/${id}`
+    );
+
+    if (response.data) {
+      return response.data;
+    }
+  } catch (error) {
+    throw error.response?.data?.message || error.message;
+  }
+};
+
 export const orderService = {
   getAllorder,
   updateOrderStatus,
+  viewOrderById,
 };

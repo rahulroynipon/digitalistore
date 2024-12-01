@@ -15,6 +15,7 @@ const ProductUploader = React.lazy(() => import("./pages/ProductUploader"));
 const ProductView = React.lazy(() => import("./pages/ProductView"));
 const ProductList = React.lazy(() => import("./pages/ProductList"));
 const OrderList = React.lazy(() => import("./pages/OrderList"));
+const OrderView = React.lazy(() => import("./pages/OrderView"));
 
 //const NotFound = React.lazy(() => import("./pages/NotFound"));
 
@@ -77,7 +78,11 @@ export const routeItems = [
     path: "/orders/list",
     component: <OrderList />,
   },
-
+  {
+    id: "order-view",
+    path: "/orders/view/:id",
+    component: <OrderView />,
+  },
   {
     id: "message",
     path: "/message/contact",

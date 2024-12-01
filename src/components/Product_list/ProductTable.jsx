@@ -243,11 +243,11 @@ export default function ProductTable() {
                     {item?.discount > 0 ? (
                       <div>
                         <p className="line-through text-gray-500">
-                          ${item?.price?.toFixed(2) || "0.00"}
+                          ৳{item?.price?.toFixed(2) || "0.00"}
                         </p>
 
                         <p className="text-green-600 font-semibold">
-                          $
+                          ৳
                           {(
                             ((100 - item?.discount) / 100) *
                             item?.price
@@ -307,7 +307,10 @@ export default function ProductTable() {
                 </TableRow>
               ))
             ) : (
-              <Availablity text="No products available" />
+              <Availablity
+                colSpan={TableHeader?.length || 0}
+                text="No products available"
+              />
             )}
           </TableBody>
         </Table>
