@@ -7,11 +7,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  CircularProgress,
-  Box,
   TableSortLabel,
 } from "@mui/material";
-import { useTheme } from "@emotion/react";
+
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -21,8 +19,12 @@ import {
 } from "../../features/category/categorySlice";
 import Modal from "../Global/Modal";
 import ProtectedAction from "../Global/ProtectedAction";
+import useThemeColors from "../Global/themeColors";
+import LoadingSpin, { Availablity } from "../Global/LoadingSpin";
 
 const CategoryTable = () => {
+  const { background, field, border, divider, text, text1, active } =
+    useThemeColors();
   const dispatch = useDispatch();
   const { categories, isLoading } = useSelector((state) => state.category);
 
@@ -84,13 +86,6 @@ const CategoryTable = () => {
     setSortedCategory(sorted);
   };
 
-  const theme = useTheme();
-  const isActiveText = theme.palette.text.isActive;
-  const tableColor = theme.palette.background.default;
-  const tableTextColor = theme.palette.text.secondary;
-  const rowColor = theme.palette.background;
-  const rowBorderColor = theme.palette.divider;
-
   // Button styling for action buttons
   const actionBTN = {
     width: 35,
@@ -104,7 +99,7 @@ const CategoryTable = () => {
       {/* Delete Confirmation Modal */}
       <Modal isOpen={deleteOpen} closeHandler={deleteCloseHandler}>
         <div
-          style={{ backgroundColor: rowColor.paper }}
+          style={{ backgroundColor: background }}
           className="max-w-full w-[20rem] p-5"
         >
           <h3 className="text-center text-xl">Delete Category</h3>
@@ -138,21 +133,21 @@ const CategoryTable = () => {
       {/* Table Container */}
       <TableContainer
         sx={{
-          backgroundColor: tableColor,
+          backgroundColor: background,
           overflowX: "auto",
-          border: `1px solid ${theme.palette.divider}`,
+          border: `1px solid ${divider}`,
         }}
       >
         <Table sx={{ minWidth: "450px", tableLayout: "auto" }}>
           <TableHead>
             <TableRow
               sx={{
-                backgroundColor: `${isActiveText}20`,
+                backgroundColor: `${active}20`,
                 textTransform: "uppercase",
               }}
             >
               {TableHeader.map(({ label, key }, index) => (
-                <TableCell key={index} sx={{ color: isActiveText }}>
+                <TableCell key={index} sx={{ color: active }}>
                   {key ? (
                     <TableSortLabel
                       active={sortConfig.key === key}
@@ -172,29 +167,23 @@ const CategoryTable = () => {
           </TableHead>
           <TableBody>
             {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={6} className="h-52" align="center">
-                  <Box>
-                    <CircularProgress sx={{ color: isActiveText }} />
-                  </Box>
-                </TableCell>
-              </TableRow>
+              <LoadingSpin colSpan={TableHeader?.length || 0} />
             ) : sortedCategory?.length ? (
               sortedCategory.map((category, index) => (
                 <TableRow
                   key={category?._id}
                   sx={{
                     backgroundColor:
-                      index % 2 === 0 ? `${rowColor.paper}90` : rowColor.paper,
-                    borderBottom: `2px solid ${rowBorderColor}10`,
-                    borderTop: `2px solid ${rowBorderColor}10`,
+                      index % 2 === 0 ? `${background}90` : background,
+                    borderBottom: `2px solid ${divider}10`,
+                    borderTop: `2px solid ${divider}10`,
                     "&:hover": {
                       cursor: "pointer",
-                      outline: `2px solid ${isActiveText}40`,
+                      outline: `2px solid ${active}40`,
                     },
                   }}
                 >
-                  <TableCell sx={{ color: tableTextColor, fontWeight: 500 }}>
+                  <TableCell sx={{ color: text, fontWeight: 500 }}>
                     {index + 1}
                   </TableCell>
                   <TableCell sx={{ padding: 1.5 }}>
@@ -209,22 +198,14 @@ const CategoryTable = () => {
                       />
                     </div>
                   </TableCell>
-                  <TableCell
-                    className="whitespace-nowrap"
-                    sx={{ color: tableTextColor }}
-                  >
+                  <TableCell className="whitespace-nowrap" sx={{ color: text }}>
                     {category?.name}
                   </TableCell>
-                  <TableCell sx={{ color: tableTextColor }}>
-                    {category?.count}
-                  </TableCell>
-                  <TableCell
-                    className="whitespace-nowrap"
-                    sx={{ color: tableTextColor }}
-                  >
+                  <TableCell sx={{ color: text }}>{category?.count}</TableCell>
+                  <TableCell className="whitespace-nowrap" sx={{ color: text }}>
                     {category?.createdAt?.split("T")[0]}
                   </TableCell>
-                  <TableCell sx={{ color: tableTextColor }}>
+                  <TableCell sx={{ color: text }}>
                     <Button
                       onClick={() => deleteOpenHandler(category?.name)}
                       sx={{
@@ -240,11 +221,7 @@ const CategoryTable = () => {
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell colSpan={6} className="h-52" align="center">
-                  No categories available
-                </TableCell>
-              </TableRow>
+              <Availablity text="No categories available" />
             )}
           </TableBody>
         </Table>

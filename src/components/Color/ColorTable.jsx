@@ -9,7 +9,6 @@ import {
   TableRow,
   TableSortLabel,
 } from "@mui/material";
-import { useTheme } from "@emotion/react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "../Global/Modal";
@@ -19,10 +18,12 @@ import {
   optimisticallyDeleteColor,
 } from "../../features/color/colorSlice";
 import ProtectedAction from "../Global/ProtectedAction";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
+import useThemeColors from "../Global/themeColors";
+import LoadingSpin, { Availablity } from "../Global/LoadingSpin";
 
 export default function ColorTable() {
+  const { background, field, border, divider, text, text1, active } =
+    useThemeColors();
   const dispatch = useDispatch();
   const { colors, isLoading } = useSelector((state) => state.color);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -83,13 +84,6 @@ export default function ColorTable() {
     setSortedColors(sorted);
   };
 
-  const theme = useTheme();
-  const isActiveText = theme.palette.text.isActive;
-  const tableColor = theme.palette.background.default;
-  const tableTextColor = theme.palette.text.secondary;
-  const rowColor = theme.palette.background;
-  const rowBorderColor = theme.palette.divider;
-
   const actionBTN = {
     width: 35,
     height: 35,
@@ -101,7 +95,7 @@ export default function ColorTable() {
     <div className="w-full overflow-x-auto">
       <Modal isOpen={deleteOpen} closeHandler={deleteCloseHandler}>
         <div
-          style={{ backgroundColor: rowColor.paper }}
+          style={{ backgroundColor: background }}
           className="max-w-full w-[20rem] p-5"
         >
           <h3 className="text-center text-xl">Delete Color</h3>
@@ -133,21 +127,21 @@ export default function ColorTable() {
       </Modal>
       <TableContainer
         sx={{
-          backgroundColor: tableColor,
+          backgroundColor: background,
           overflowX: "auto",
-          border: `1px solid ${theme.palette.divider}`,
+          border: `1px solid ${divider}`,
         }}
       >
         <Table sx={{ minWidth: "650px", tableLayout: "auto" }}>
           <TableHead>
             <TableRow
               sx={{
-                backgroundColor: `${isActiveText}20`,
+                backgroundColor: `${active}20`,
                 textTransform: "uppercase",
               }}
             >
               {TableHeader.map(({ label, key }, index) => (
-                <TableCell key={index} sx={{ color: isActiveText }}>
+                <TableCell key={index} sx={{ color: active }}>
                   {key ? (
                     <TableSortLabel
                       active={sortConfig.key === key}
@@ -167,47 +161,32 @@ export default function ColorTable() {
           </TableHead>
           <TableBody>
             {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={7} className="h-52" align="center">
-                  <Box>
-                    <CircularProgress sx={{ color: isActiveText }} />
-                  </Box>
-                </TableCell>
-              </TableRow>
+              <LoadingSpin colSpan={TableHeader.length || 0} />
             ) : sortedColors?.length ? (
               sortedColors.map((color, index) => (
                 <TableRow
                   key={color?._id}
                   sx={{
-                    backgroundColor:
-                      index % 2 === 0 ? `${rowColor.paper}90` : rowColor.paper,
-                    borderBottom: `2px solid ${rowBorderColor}10`,
-                    borderTop: `2px solid ${rowBorderColor}10`,
+                    backgroundColor: background,
+                    borderBottom: `2px solid ${divider}10`,
+                    borderTop: `2px solid ${divider}10`,
                     "&:hover": {
                       cursor: "pointer",
-                      outline: `2px solid ${isActiveText}40`,
+                      outline: `2px solid ${active}40`,
                     },
                   }}
                 >
-                  <TableCell sx={{ color: tableTextColor, fontWeight: 500 }}>
-                    {index + 1}
-                  </TableCell>
-                  <TableCell sx={{ color: tableTextColor }}>
+                  <TableCell sx={{ fontWeight: 500 }}>{index + 1}</TableCell>
+                  <TableCell>
                     <span
                       style={{ backgroundColor: color?.code }}
                       className="relative h-14 w-14 inline-block rounded-md shadow-lg border"
                     ></span>
                   </TableCell>
-                  <TableCell sx={{ color: tableTextColor }}>
-                    {color?.name}
-                  </TableCell>
-                  <TableCell sx={{ color: tableTextColor }}>
-                    {color?.code}
-                  </TableCell>
+                  <TableCell>{color?.name}</TableCell>
+                  <TableCell>{color?.code}</TableCell>
 
-                  <TableCell sx={{ color: tableTextColor }}>
-                    {color?.createdAt?.split("T")[0]}
-                  </TableCell>
+                  <TableCell>{color?.createdAt?.split("T")[0]}</TableCell>
                   <TableCell>
                     <Button
                       onClick={() => deleteOpenHandler(color?.name)}
@@ -224,11 +203,7 @@ export default function ColorTable() {
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell colSpan={7} className="h-52" align="center">
-                  No colors available
-                </TableCell>
-              </TableRow>
+              <Availablity text="No colors available" />
             )}
           </TableBody>
         </Table>

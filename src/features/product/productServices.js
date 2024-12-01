@@ -18,9 +18,18 @@ const createProduct = async (product) => {
   }
 };
 
-const getAllProduct = async () => {
+const getAllProduct = async (category, brand) => {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_API_URL}/product`);
+    console.log(brand);
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/product`,
+      {
+        params: {
+          ...(category && { category }),
+          ...(brand && { brand }),
+        },
+      }
+    );
     if (response.data) {
       return response.data;
     }

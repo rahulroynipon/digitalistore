@@ -21,8 +21,12 @@ import Modal from "../Global/Modal";
 import ProtectedAction from "../Global/ProtectedAction";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import useThemeColors from "../Global/themeColors";
+import LoadingSpin, { Availablity } from "../Global/LoadingSpin";
 
 export default function BrandTable() {
+  const { background, field, border, divider, text, text1, active } =
+    useThemeColors();
   const dispatch = useDispatch();
   const { brands, isLoading } = useSelector((state) => state.brand);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -75,20 +79,13 @@ export default function BrandTable() {
     }
     setSortConfig({ key, direction });
 
-    const sorted = [...categories].sort((a, b) => {
+    const sorted = [...brands].sort((a, b) => {
       if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
       if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
       return 0;
     });
-    setSortedCategory(sorted);
+    setSortedBrand(sorted);
   };
-
-  const theme = useTheme();
-  const isActiveText = theme.palette.text.isActive;
-  const tableColor = theme.palette.background.default;
-  const tableTextColor = theme.palette.text.secondary;
-  const rowColor = theme.palette.background;
-  const rowBorderColor = theme.palette.divider;
 
   const actionBTN = {
     width: 35,
@@ -101,7 +98,7 @@ export default function BrandTable() {
     <div className="w-full overflow-x-auto">
       <Modal isOpen={deleteOpen} closeHandler={deleteCloseHandler}>
         <div
-          style={{ backgroundColor: rowColor.paper }}
+          style={{ backgroundColor: background }}
           className="max-w-full w-[20rem] p-5"
         >
           <h3 className="text-center text-xl">Delete Brand</h3>
@@ -133,21 +130,21 @@ export default function BrandTable() {
       </Modal>
       <TableContainer
         sx={{
-          backgroundColor: tableColor,
+          backgroundColor: background,
           overflowX: "auto",
-          border: `1px solid ${theme.palette.divider}`,
+          border: `1px solid ${divider}`,
         }}
       >
         <Table sx={{ minWidth: "450px", tableLayout: "auto" }}>
           <TableHead>
             <TableRow
               sx={{
-                backgroundColor: `${isActiveText}20`,
+                backgroundColor: `${active}20`,
                 textTransform: "uppercase",
               }}
             >
               {TableHeader.map(({ label, key }, index) => (
-                <TableCell key={index} sx={{ color: isActiveText }}>
+                <TableCell key={index} sx={{ color: active }}>
                   {key ? (
                     <TableSortLabel
                       active={sortConfig.key === key}
@@ -167,31 +164,23 @@ export default function BrandTable() {
           </TableHead>
           <TableBody>
             {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={6} className="h-52" align="center">
-                  <Box>
-                    <CircularProgress sx={{ color: isActiveText }} />
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ) : brands?.length ? (
-              brands?.map((category, index) => (
+              <LoadingSpin colSpan={TableHeader?.length || 0} />
+            ) : sortedBrand?.length ? (
+              sortedBrand?.map((category, index) => (
                 <TableRow
                   key={category?._id}
                   sx={{
                     backgroundColor:
-                      index % 2 === 0 ? `${rowColor.paper}90` : rowColor.paper,
-                    borderBottom: `2px solid ${rowBorderColor}10`,
-                    borderTop: `2px solid ${rowBorderColor}10`,
+                      index % 2 === 0 ? `${background}90` : background,
+                    borderBottom: `2px solid ${divider}10`,
+                    borderTop: `2px solid ${divider}10`,
                     "&:hover": {
                       cursor: "pointer",
-                      outline: `2px solid ${isActiveText}40`,
+                      outline: `2px solid ${active}40`,
                     },
                   }}
                 >
-                  <TableCell sx={{ color: tableTextColor, fontWeight: 500 }}>
-                    {index + 1}
-                  </TableCell>
+                  <TableCell sx={{ fontWeight: 500 }}>{index + 1}</TableCell>
                   <TableCell sx={{ padding: 1.5 }}>
                     <div className="relative bg-white inline-block rounded-md shadow-lg border">
                       <img
@@ -204,22 +193,14 @@ export default function BrandTable() {
                       />
                     </div>
                   </TableCell>
-                  <TableCell
-                    className="whitespace-nowrap"
-                    sx={{ color: tableTextColor }}
-                  >
+                  <TableCell className="whitespace-nowrap">
                     {category?.name}
                   </TableCell>
-                  <TableCell sx={{ color: tableTextColor }}>
-                    {category?.count}
-                  </TableCell>
-                  <TableCell
-                    className="whitespace-nowrap"
-                    sx={{ color: tableTextColor }}
-                  >
+                  <TableCell>{category?.count}</TableCell>
+                  <TableCell className="whitespace-nowrap">
                     {category?.createdAt?.split("T")[0]}
                   </TableCell>
-                  <TableCell sx={{ color: tableTextColor }}>
+                  <TableCell>
                     <Button
                       onClick={() => deleteOpenHandler(category?.name)}
                       sx={{
@@ -235,11 +216,7 @@ export default function BrandTable() {
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell colSpan={6} className="h-52" align="center">
-                  No brands available
-                </TableCell>
-              </TableRow>
+              <Availablity text="No brands available" />
             )}
           </TableBody>
         </Table>

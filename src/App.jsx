@@ -14,6 +14,7 @@ const Color = React.lazy(() => import("./pages/Color"));
 const ProductUploader = React.lazy(() => import("./pages/ProductUploader"));
 const ProductView = React.lazy(() => import("./pages/ProductView"));
 const ProductList = React.lazy(() => import("./pages/ProductList"));
+const OrderList = React.lazy(() => import("./pages/OrderList"));
 
 //const NotFound = React.lazy(() => import("./pages/NotFound"));
 
@@ -54,12 +55,12 @@ export const routeItems = [
   {
     id: "product-list",
     path: "/products/list",
-    component: <ProductList />, // Replace with actual component
+    component: <ProductList />,
   },
   {
     id: "product-view",
-    path: "/products/view",
-    component: <ProductView />, // Replace with actual component
+    path: "/products/view/:id",
+    component: <ProductView />,
   },
   {
     id: "product-upload",
@@ -67,20 +68,16 @@ export const routeItems = [
     component: <ProductUploader />,
   },
   {
+    id: "consumer-list",
+    path: "/consumer/list",
+    component: <>Component List</>,
+  },
+  {
     id: "all-orders",
     path: "/orders/list",
-    component: <>OrderList</>, // Replace with actual component
+    component: <OrderList />,
   },
-  {
-    id: "pending-orders",
-    path: "/orders/pending",
-    component: <>PendingOrders</>, // Replace with actual component
-  },
-  {
-    id: "completed-orders",
-    path: "/orders/completed",
-    component: <>CompletedOrders</>, // Replace with actual component
-  },
+
   {
     id: "message",
     path: "/message/contact",
@@ -109,7 +106,7 @@ export const routeItems = [
   {
     id: "notification",
     path: "/notification",
-    component: <Notification />, // Replace with actual component
+    component: <>Notification </>, // Replace with actual component
   },
 ];
 

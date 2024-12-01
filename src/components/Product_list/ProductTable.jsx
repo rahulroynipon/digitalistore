@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addProductId,
   deleteProduct,
   getProduct,
   optimisticallyDeleteProduct,
@@ -24,8 +23,12 @@ import {
   TableSortLabel,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import LoadingSpin, { Availablity } from "../Global/LoadingSpin";
+import useThemeColors from "../Global/themeColors";
 
 export default function ProductTable() {
+  const { background, field, border, divider, text, text1, active } =
+    useThemeColors();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { products, isLoading } = useSelector((state) => state.product);
@@ -34,24 +37,22 @@ export default function ProductTable() {
   const [selectedProductName, setSelectedProductName] = useState(null);
   const [sortedProduct, setSortedProduct] = useState([]);
   const [sortConfig, setSortConfig] = useState({
-    key: "name",
-    direction: "asc",
+    key: "",
+    direction: "",
   });
 
   const TableHeader = [
-    { label: "SL.", key: null },
-    { label: "Product", key: "name" },
-    { label: "Category", key: "category" },
-    { label: "Brand", key: "brand" },
-    { label: "Price", key: "price" },
-    { label: "Stock", key: "stock" },
-    { label: "Rating", key: "rating" },
-    { label: "Order", key: "order" },
-    { label: "Actions", key: null },
+    { label: "SL.", key: null, align: "left" },
+    { label: "Product", key: "title", align: "left" },
+    { label: "Category", key: "category.name", align: "center" },
+    { label: "Brand", key: "brand.name", align: "center" },
+    { label: "Price", key: "price", align: "right" },
+    { label: "Stock", key: "stack", align: "right" },
+    { label: "Rating", key: "totalrating", align: "right" },
+    { label: "Order", key: "order", align: "right" },
+    { label: "Sold", key: "sold", align: "right" },
+    { label: "Actions", key: null, align: "center" },
   ];
-  useEffect(() => {
-    dispatch(getProduct());
-  }, [dispatch]);
 
   useEffect(() => {
     if (products?.length) {
@@ -84,26 +85,23 @@ export default function ProductTable() {
     }
     setSortConfig({ key, direction });
 
-    const sorted = [...categories].sort((a, b) => {
-      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
-      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
+    const sorted = [...sortedProduct].sort((a, b) => {
+      const getNestedValue = (obj, path) =>
+        path.split(".").reduce((acc, key) => acc?.[key] || "", obj);
+
+      const valA = getNestedValue(a, key);
+      const valB = getNestedValue(b, key);
+
+      if (valA < valB) return direction === "asc" ? -1 : 1;
+      if (valA > valB) return direction === "asc" ? 1 : -1;
       return 0;
     });
     setSortedProduct(sorted);
   };
 
   const viewProductHandler = (id) => {
-    dispatch(addProductId(id));
-    navigate("/products/view");
+    navigate(`/products/view/${id}`);
   };
-
-  const theme = useTheme();
-  const isActiveText = theme.palette.text.isActive;
-  const tableColor = theme.palette.background.default;
-  const tableTextColor = theme.palette.text.secondary;
-  const rowColor = theme.palette.background;
-  const rowBorderColor = theme.palette.divider;
-  const textColor = theme.palette.text.primary;
 
   const actionBTN = {
     width: 35,
@@ -116,7 +114,7 @@ export default function ProductTable() {
     <div className="w-full overflow-x-auto">
       <Modal isOpen={deleteOpen} closeHandler={deleteCloseHandler}>
         <div
-          style={{ backgroundColor: rowColor.paper }}
+          style={{ backgroundColor: background }}
           className="max-w-full w-[24rem] p-5"
         >
           <h3 className="text-center text-xl">Delete Product</h3>
@@ -148,10 +146,10 @@ export default function ProductTable() {
       </Modal>
       <TableContainer
         sx={{
-          backgroundColor: tableColor,
+          backgroundColor: background,
           overflowX: "auto",
           overflowY: "hidden",
-          border: `1px solid ${theme.palette.divider}`,
+          border: `1px solid ${divider}`,
         }}
       >
         <Table sx={{ minWidth: 450, tableLayout: "auto" }}>
@@ -159,20 +157,12 @@ export default function ProductTable() {
           <TableHead>
             <TableRow
               sx={{
-                backgroundColor: `${isActiveText}20`,
+                backgroundColor: `${active}20`,
                 textTransform: "uppercase",
               }}
             >
-              {TableHeader.map(({ label, key }, index) => (
-                <TableCell
-                  key={index}
-                  sx={{ color: isActiveText }}
-                  align={
-                    ["Stock", "Rating", "Order", "Actions"].includes(label)
-                      ? "center"
-                      : "left"
-                  }
-                >
+              {TableHeader.map(({ label, key, align }, index) => (
+                <TableCell key={index} sx={{ color: active }} align={align}>
                   {key ? (
                     <TableSortLabel
                       active={sortConfig.key === key}
@@ -194,25 +184,18 @@ export default function ProductTable() {
           {/* Table Body */}
           <TableBody>
             {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={9} className="h-52" align="center">
-                  <Box>
-                    <CircularProgress sx={{ color: isActiveText }} />
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ) : sortedProduct?.length ? (
+              <LoadingSpin colSpan={TableHeader?.length || 0} />
+            ) : sortedProduct?.length && products?.length ? (
               sortedProduct?.map((item, index) => (
                 <TableRow
                   key={item?._id}
                   sx={{
-                    backgroundColor:
-                      index % 2 === 0 ? `${rowColor.paper}90` : rowColor.paper,
-                    borderBottom: `2px solid ${rowBorderColor}10`,
-                    borderTop: `2px solid ${rowBorderColor}10`,
+                    backgroundColor: background,
+                    borderBottom: `2px solid ${divider}10`,
+                    borderTop: `2px solid ${divider}10`,
                     "&:hover": {
                       cursor: "pointer",
-                      outline: `2px solid ${isActiveText}40`,
+                      outline: `2px solid ${active}40`,
                     },
                   }}
                 >
@@ -246,17 +229,17 @@ export default function ProductTable() {
                       )}
                     </span>
                   </TableCell>
-                  <TableCell>
+                  <TableCell align="center">
                     {item?.category?.name || (
                       <span className="font-semibold text-red-500">N/A</span>
                     )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell align="center">
                     {item?.brand?.name || (
                       <span className="font-semibold text-red-500">N/A</span>
                     )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell align="right">
                     {item?.discount > 0 ? (
                       <div>
                         <p className="line-through text-gray-500">
@@ -275,7 +258,7 @@ export default function ProductTable() {
                       <p>${item?.price?.toFixed(2) || "0.00"}</p>
                     )}
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="right">
                     {item?.stack > 0 ? (
                       <span>{item.stack}</span>
                     ) : (
@@ -285,12 +268,13 @@ export default function ProductTable() {
                     )}
                   </TableCell>
 
-                  <TableCell align="center">
+                  <TableCell align="right">
                     <p>{`${item?.totalrating || 0}(${
                       item?.ratings?.length || 0
                     })`}</p>
                   </TableCell>
-                  <TableCell align="center">{item?.order || "0"}</TableCell>
+                  <TableCell align="right">{item?.order || "0"}</TableCell>
+                  <TableCell align="right">{item?.sold || "0"}</TableCell>
                   <TableCell align="center">
                     <span className="flex items-center justify-center ">
                       <Button
@@ -323,11 +307,7 @@ export default function ProductTable() {
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell colSpan={9} className="h-52" align="center">
-                  No products available
-                </TableCell>
-              </TableRow>
+              <Availablity text="No products available" />
             )}
           </TableBody>
         </Table>

@@ -10,6 +10,7 @@ import { MdMessage } from "react-icons/md";
 import { MdCategory } from "react-icons/md";
 import { MdNotificationsActive } from "react-icons/md";
 import { NavLink, useLocation } from "react-router-dom";
+import GroupIcon from "@mui/icons-material/Group";
 
 export default function Navbar({ navCloseHandler }) {
   const theme = useTheme();
@@ -167,11 +168,6 @@ export const navItems = [
         path: "/products/list",
       },
       {
-        id: "product-view",
-        label: "Product View",
-        path: "/products/view",
-      },
-      {
         id: "product-upload",
         label: "Product Upload",
         path: "/products/upload",
@@ -179,23 +175,16 @@ export const navItems = [
     ],
   },
   {
-    id: "orders",
-    label: "Orders",
+    id: "consumer-list",
+    label: "Consumer",
+    path: "/consumer/list",
+    icon: <GroupIcon />,
+  },
+  {
+    id: "order-list",
+    label: "Order List",
     icon: <FaCartArrowDown />,
-    path: "orders",
-    subItems: [
-      { id: "all-orders", label: "Orders List", path: "/orders/list" },
-      {
-        id: "pending-orders",
-        label: "Pending Orders",
-        path: "/orders/pending",
-      },
-      {
-        id: "completed-orders",
-        label: "Completed Orders",
-        path: "/orders/completed",
-      },
-    ],
+    path: "/orders/list",
   },
   {
     id: "message",

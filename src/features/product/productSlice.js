@@ -16,9 +16,9 @@ export const addProduct = createAsyncThunk(
 
 export const getProduct = createAsyncThunk(
   "product/get",
-  async (_, thunkAPI) => {
+  async ({ category, brand }, thunkAPI) => {
     try {
-      return await productService.getAllProduct();
+      return await productService.getAllProduct(category, brand);
     } catch (error) {
       console.error("product get", error);
       return thunkAPI.rejectWithValue(error);
@@ -52,8 +52,8 @@ export const viewProduct = createAsyncThunk(
 
 const initialState = {
   products: [],
-  viewProductId: "",
   totalProduct: 0,
+  uploadID: "",
   isLoading: false,
   isSuccess: false,
   isError: false,
@@ -73,9 +73,8 @@ export const productSlice = createSlice({
 
       toast.success("Product deleted successfully");
     },
-
-    addProductId: (state, action) => {
-      state.viewProductId = action.payload;
+    clearUploadID: (state) => {
+      state.uploadID = "";
     },
   },
   extraReducers: (builder) => {
@@ -84,12 +83,15 @@ export const productSlice = createSlice({
         state.isLoading = true;
         state.isSuccess = false;
         state.isError = false;
+        state.uploadID = "";
         state.message = "";
       })
       .addCase(addProduct.fulfilled, (state, action) => {
+        state.uploadID = action.payload?.data?._id || "";
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
+
         state.message = action.payload?.message || "";
         if (state.isSuccess) {
           toast.success(state.message);
@@ -99,6 +101,7 @@ export const productSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
+        state.uploadID = "";
         state.message = action.payload || "";
 
         if (state.isError) {
@@ -147,6 +150,6 @@ export const productSlice = createSlice({
   },
 });
 
-export const { optimisticallyDeleteProduct, addProductId } =
+export const { optimisticallyDeleteProduct, clearUploadID } =
   productSlice.actions;
 export default productSlice.reducer;

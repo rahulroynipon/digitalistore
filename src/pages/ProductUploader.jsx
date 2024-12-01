@@ -1,6 +1,5 @@
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useTheme } from "@emotion/react";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import {
@@ -9,7 +8,7 @@ import {
   MultiSelectDropdown,
 } from "../components/Product_upload/Product_upload";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getCategory } from "../features/category/categorySlice";
 import { getBrand } from "../features/brand/brandSlice";
 import { getColor } from "../features/color/colorSlice";
@@ -19,27 +18,31 @@ import MediaUploader from "../components/Product_upload/MediaUploader.jsx";
 import ProtectedAction from "../components/Global/ProtectedAction.jsx";
 import { Button } from "@mui/material";
 import { addProduct } from "../features/product/productSlice.js";
+import { useNavigate } from "react-router-dom";
+import useThemeColors from "../components/Global/themeColors.js";
 
 export default function ProductUploader() {
+  const { background, field, border, text, active } = useThemeColors();
   const { categories } = useSelector((state) => state.category);
   const { brands } = useSelector((state) => state.brand);
   const { colors } = useSelector((state) => state.color);
-  const { isLoading } = useSelector((state) => state.product);
+  const { isLoading, isSuccess, uploadID } = useSelector(
+    (state) => state.product
+  );
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // Dispatch actions to get categories, brands, colors
   useEffect(() => {
     dispatch(getCategory());
     dispatch(getBrand());
     dispatch(getColor());
   }, [dispatch]);
 
-  const theme = useTheme();
-  const bgColor = theme.palette.background.paper;
-  const fieldColor = theme.palette.background.default;
-  const borderColor = theme.palette.border.secondary;
-  const textColor = theme.palette.text.primary;
-  const btnColor = theme.palette.text.isActive;
+  useEffect(() => {
+    if (isSuccess && uploadID) {
+      navigate(`/products/view/${uploadID}`);
+    }
+  }, [isSuccess, uploadID, navigate]);
 
   return (
     <section style={{ maxWidth: "93vw" }} className="m-3 mt-5 md:m-5 ">
@@ -55,16 +58,16 @@ export default function ProductUploader() {
             transform: "translate(-50%, -50%)",
           }}
         >
-          <CircularProgress sx={{ color: btnColor }} />
+          <CircularProgress sx={{ color: active }} />
         </Box>
       ) : null}
       {/* loaing state handler  end*/}
 
       <div
-        className="rounded-lg"
+        className="shadow-sm"
         style={{
-          backgroundColor: bgColor,
-          border: `1px solid ${borderColor}20`,
+          backgroundColor: background,
+          border: `1px solid ${border}20`,
         }}
       >
         <h1 className="text-2xl p-5">
@@ -74,10 +77,10 @@ export default function ProductUploader() {
 
       {/* Main Form Section */}
       <main
-        className="mt-5 p-5 rounded-lg shadow-lg"
+        className="mt-5 p-5 shadow-lg"
         style={{
-          backgroundColor: bgColor,
-          border: `1px solid ${borderColor}20`,
+          backgroundColor: background,
+          border: `1px solid ${border}20`,
         }}
       >
         <label className=" mb-5 text-2xl inline-block font-semibold opacity-85">
@@ -102,7 +105,6 @@ export default function ProductUploader() {
             });
 
             dispatch(addProduct(formData));
-            resetForm();
           }}
         >
           {({
@@ -248,7 +250,7 @@ export default function ProductUploader() {
                     type="button"
                     disabled={isLoading}
                     sx={{
-                      backgroundColor: btnColor,
+                      backgroundColor: active,
                       color: "white",
                       width: "100%",
                     }}
