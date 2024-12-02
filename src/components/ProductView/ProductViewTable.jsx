@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import useThemeColors from "../Global/themeColors";
 //import { Table, TableCell, TableRow } from "@mui/material";
-import ReactHtmlParser from "react-html-parser";
 
 export default function ProductViewTable() {
   const { background, field, border, text, active } = useThemeColors();
@@ -41,9 +40,8 @@ export default function ProductViewTable() {
           border: `1px solid ${border}20`,
         }}
         className="mt-7 p-5"
-      >
-        {ReactHtmlParser(product?.description)}
-      </section>
+        dangerouslySetInnerHTML={{ __html: product?.description || "" }}
+      ></section>
     </>
   );
 }

@@ -41,7 +41,7 @@ export default function OrderList() {
         className="flex justify-between p-6 flex-wrap gap-3"
       >
         <h1 className="text-xl font-bold">
-          Product List ({sortedOrders?.length || 0})
+          Order List ({sortedOrders?.length || 0})
         </h1>
 
         <div>
