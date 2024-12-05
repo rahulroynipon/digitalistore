@@ -38,7 +38,7 @@ export default function ProductList() {
       style={{
         color: text,
       }}
-      className="m-3 mt-5 md:m-5  overflow-auto max-w-[93vw] md:max-w-[94vw]  lg:max-w-[68vw] xl:max-w-[74vw] 2xl:max-w-[100vw] "
+      className="m-3 mt-5 md:m-5  overflow-auto max-w-[93vw] md:max-w-[94vw]  lg:max-w-[74vw] xl:max-w-[80vw]  2xl:max-w-[100vw]"
     >
       {/* table title */}
       <div

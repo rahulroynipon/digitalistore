@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getTokens } from "../../context/Token";
 
 const getAllorder = async () => {
   try {
@@ -12,11 +13,18 @@ const getAllorder = async () => {
 };
 
 const updateOrderStatus = async (id, status) => {
+  const token = getTokens();
   try {
     const response = await axios.patch(
       `${import.meta.env.VITE_API_URL}/order`,
       { id, status },
-      { withCredentials: true }
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      }
     );
     if (response.data) {
       return response.data;

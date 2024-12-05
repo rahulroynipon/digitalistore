@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getTokens } from "../../context/Token";
 
 const getAllcolor = async () => {
   try {
@@ -13,11 +14,18 @@ const getAllcolor = async () => {
 };
 
 const createColor = async (color) => {
+  const token = getTokens();
   try {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/color`,
       color,
-      { withCredentials: true }
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      }
     );
 
     if (response.data) {
@@ -29,10 +37,15 @@ const createColor = async (color) => {
 };
 
 const deleteColor = async (name) => {
+  const token = getTokens();
   try {
     const response = await axios.delete(
       `${import.meta.env.VITE_API_URL}/color/${name}`,
       {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
       }
     );

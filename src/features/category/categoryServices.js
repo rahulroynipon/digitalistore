@@ -1,11 +1,17 @@
 import axios from "axios";
+import { getTokens } from "../../context/Token";
 
 const createCategory = async (category) => {
+  const token = getTokens();
   try {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/category`,
       category,
       {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
       }
     );
@@ -33,10 +39,15 @@ const getAllCategory = async () => {
 };
 
 const deleteCategory = async (name) => {
+  const token = getTokens();
   try {
     const response = await axios.delete(
       `${import.meta.env.VITE_API_URL}/category/${name}`,
       {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
       }
     );

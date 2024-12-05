@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { authService } from "./userServices";
 import { toast } from "sonner";
+import { saveToken, getTokens, clearToken } from "./../../context/Token";
 
 export const googleSignUp = createAsyncThunk(
   "auth/google",
@@ -65,12 +66,15 @@ export const authSlice = createSlice({
         state.message = "";
       })
       .addCase(googleSignUp.fulfilled, (state, action) => {
+        const { message, data } = action?.payload;
         state.isAuth = true;
-        state.user = action.payload?.data || null;
+        state.user = data || null;
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.message = action.payload?.message || "";
+        state.message = message || "";
+
+        saveToken(data?.accessToken, data?.refreshToken);
         if (state.isSuccess) {
           toast.success(state.message);
         }
@@ -120,6 +124,7 @@ export const authSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.message = action.payload?.message || "";
+        clearToken();
         if (state.isSuccess) {
           toast.success(state.message);
         }

@@ -153,10 +153,13 @@ export default function BrandTable() {
                       }
                       onClick={() => handleSort(key)}
                     >
-                      <span className=" font-semibold"> {label}</span>
+                      <span className="text-nowrap font-semibold">
+                        {" "}
+                        {label}
+                      </span>
                     </TableSortLabel>
                   ) : (
-                    <span className=" font-semibold"> {label}</span>
+                    <span className="text-nowrap font-semibold"> {label}</span>
                   )}
                 </TableCell>
               ))}

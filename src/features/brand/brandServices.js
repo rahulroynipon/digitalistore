@@ -1,11 +1,17 @@
 import axios from "axios";
+import { getTokens } from "../../context/Token";
 
 const createBrand = async (brand) => {
+  const token = getTokens();
   try {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/brand`,
       brand,
       {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
       }
     );
@@ -33,10 +39,15 @@ const getAllBrand = async () => {
 };
 
 const deleteBrand = async (name) => {
+  const token = getTokens();
   try {
     const response = await axios.delete(
       `${import.meta.env.VITE_API_URL}/brand/${name}`,
       {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
       }
     );

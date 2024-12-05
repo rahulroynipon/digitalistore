@@ -1,11 +1,17 @@
 import axios from "axios";
+import { getTokens } from "../../context/Token";
 
 const createProduct = async (product) => {
+  const token = getTokens();
   try {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/product`,
       product,
       {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
       }
     );
@@ -39,10 +45,15 @@ const getAllProduct = async (category, brand) => {
 };
 
 const deleteProduct = async (id) => {
+  const token = getTokens();
   try {
     const response = await axios.delete(
       `${import.meta.env.VITE_API_URL}/product/${id}`,
       {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
       }
     );

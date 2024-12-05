@@ -5,13 +5,10 @@ import {
   getProduct,
   optimisticallyDeleteProduct,
 } from "../../features/product/productSlice";
-import { useTheme } from "@mui/material/styles";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import CircularProgress from "@mui/material/CircularProgress";
 import Modal from "../Global/Modal";
 import ProtectedAction from "../Global/ProtectedAction";
-import Box from "@mui/material/Box";
 import {
   TableBody,
   Table,

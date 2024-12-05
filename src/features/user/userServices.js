@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getTokens } from "./../../context/Token";
 
 const googleAuth = async (token) => {
   try {
@@ -23,10 +24,15 @@ const googleAuth = async (token) => {
 };
 
 const getUserAuth = async () => {
+  const token = getTokens();
   try {
     const response = await axios.get(
       `${import.meta.env.VITE_API_URL}/auth/user`,
       {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
       }
     );
@@ -40,10 +46,15 @@ const getUserAuth = async () => {
 };
 
 const logoutUser = async () => {
+  const token = getTokens();
   try {
     const response = await axios.get(
       `${import.meta.env.VITE_API_URL}/auth/logout`,
       {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
       }
     );
