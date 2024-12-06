@@ -9,7 +9,6 @@ const createCategory = async (category) => {
       category,
       {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         withCredentials: true,

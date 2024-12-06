@@ -51,7 +51,6 @@ const deleteProduct = async (id) => {
       `${import.meta.env.VITE_API_URL}/product/${id}`,
       {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         withCredentials: true,

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getTokens } from "./../../context/Token";
+import { clearToken, getTokens } from "./../../context/Token";
 
 const googleAuth = async (token) => {
   try {
@@ -60,6 +60,7 @@ const logoutUser = async () => {
     );
 
     if (response.data) {
+      clearToken();
       return response.data;
     }
   } catch (error) {
